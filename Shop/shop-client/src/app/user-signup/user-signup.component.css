@@ -1,0 +1,8 @@
+body {
+    margin: 100px;
+}
+
+#required::after {
+    content: ' *';
+    color: red;
+}

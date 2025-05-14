@@ -1,0 +1,72 @@
+<section style="background-color: white;" class="py-5">
+    <div *ngIf="favList.length === 0" class="d-flex justify-content-center" style="margin-top: 100px;">
+        <h4>Add items to your wishlist</h4>
+    </div>
+    <div *ngFor="let item of favList" class="container">
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-12 col-xl-10">
+                <div class="card shadow-0 border rounded-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-3 col-xl-3 mb-4 mb-lg-0">
+                                <div class="bg-image hover-zoom ripple rounded ripple-surface">
+                                    <img src="{{ item.product.picture }}"
+                                        class="w-100" />
+                                    <a href="#!">
+                                        <div class="hover-overlay">
+                                            <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);">
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 col-xl-6 border-sm-start-none border-start">
+                                <h5>{{ item.product.name }}</h5>
+                                <div class="mt-1 mb-0 text-muted small">
+                                    <span>{{ item.product.manufacturer }}</span>
+                                    <span class="text-primary"> • </span>
+                                    <span>{{ item.product.color }}</span>
+                                    <span class="text-primary"> • </span>
+                                    <span>{{ item.product.countryOfOrigin }}<br /></span>
+                                </div>
+                                <div class="mb-2 text-muted small">
+                                    <div [ngSwitch]="item.product.type">
+                                        <div *ngSwitchCase="'acousticguitar'">Acoustic guitar</div>
+                                        <div *ngSwitchCase="'electricguitar'">Electric guitar</div>
+                                        <div *ngSwitchCase="'bassguitar'">Bass guitar</div>
+                                        <div *ngSwitchCase="'soprano'">Soprano ukulele</div>
+                                        <div *ngSwitchCase="'concert'">Concert ukulele</div>
+                                        <div *ngSwitchCase="'tenor'">Tenor ukulele</div>
+                                        <div *ngSwitchCase="'acousticdrums'">Acosutic drums</div>
+                                        <div *ngSwitchCase="'electronicdrums'">Electronic drums</div>
+                                        <div *ngSwitchCase="'synthesizer'">Synthesizer</div>
+                                        <div *ngSwitchCase="'acousticamp'">Acoustic amp</div>
+                                        <div *ngSwitchCase="'electricamp'">Electric amp</div>
+                                        <div *ngSwitchCase="'bassamp'">Bass amp</div>
+                                        <div *ngSwitchCase="'microphone'">Microphone</div>
+                                        <div *ngSwitchCase="'strings'">Strings</div>
+                                        <div *ngSwitchCase="'capo'">Capo</div>
+                                    </div>
+                                </div>
+                                <p class="mb-4 mb-md-0 text-truncate">
+                                    {{ item.product.description }}
+                                </p>
+                            </div>
+                            <div class="col-md-6 col-lg-3 col-xl-3 border-sm-start-none border-start">
+                                <div class="d-flex flex-row align-items-center mb-1 justify-content-center">
+                                    <h4 class="mb-1 me-1">{{ item.product.price | currency }}</h4>
+                                </div>
+                                <div class="d-flex flex-column" style="margin-top:120px">
+                                    <button class="btn btn-primary btn-sm" [routerLink]="['/product', item.product._id]" type="button">Details</button>
+                                    <button class="btn btn-outline-danger btn-sm mt-2" (click)="removeFromFavList(item.product._id)" type="button"> 
+                                        Remove from wishlist
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+</section>

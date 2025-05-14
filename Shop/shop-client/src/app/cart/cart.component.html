@@ -1,0 +1,66 @@
+<div class="cart_section d-flex align-items-center justify-content-center px-5  mt-5 pt-5">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-1">
+                <div class="cart_container"> 
+                    <div class="cart_title">Shopping Cart</div>
+                    <div><small> {{ items.length }} item(s) in your cart </small></div>
+                    <div *ngFor="let item of items" class="cart_items">
+                        <ul class="cart_list">
+                            <li class="cart_item clearfix">
+                                <div class="cart_item_image"><img src="{{ item.picture[0] }}" alt=""></div>
+                                <div class="cart_item_info d-flex flex-md-row flex-column justify-content-between">
+                                    <div class="cart_item_name cart_info_col">
+                                        <div class="cart_item_title">Name</div>
+                                        <div class="cart_item_text">{{ item.name }}</div>
+                                    </div>
+                                    <div class="cart_item_quantity cart_info_col">
+                                        <div class="cart_item_title">Quantity</div>
+                                        <div class="cart_item_text">{{ item.quantity }}</div>
+                                    </div>
+                                    <div class="cart_item_price cart_info_col">
+                                        <div class="cart_item_title">Price</div>
+                                        <div class="cart_item_text">{{ item.price * item.quantity | currency: 'EUR'}}</div>
+                                    </div>
+                                    <div class="mt-5">
+                                        <button (click)="removeItem(item._id)" class="btn custom-button">x</button>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="order_total">
+                        <div class="order_total_content text-md-right">
+                            <div class="order_total_amount">{{ totalPrice | currency: 'EUR'}}</div>
+                            <div class="order_total_title">Order Total:</div>
+                        </div>
+                    </div>
+                    <div class="cart_buttons">
+                        <button type="button" [routerLink]="['/']" class="button cart_button_clear"><span style="font-size: 20px;">&#8592;</span> Continue Shopping</button>
+                        <button *ngIf="totalPrice>0" type="button" (click)="clearCart()" class="button cart_button_clear">Clear cart</button>
+                        <button *ngIf="totalPrice>0" type="button" (click)="addOrder()" class="button cart_button_checkout">Buy</button> 
+                    </div>
+                </div>
+            </div>
+            <div class="text-black col-lg-3" style="margin-left: 200px;" >
+                <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Your informations:</h3>
+    
+                
+                <div class="form-outline mb-4">
+                    <label id="phoneNumber" class="form-label" for="phoneNumber">Phone number:</label>
+                    <input type="text" [(ngModel)]="phoneNumber" id="phoneNumber" class="form-control form-control-lg" placeholder=" phone number" />
+                </div>
+
+                <div class="form-outline mb-4">
+                    <label id="address" class="form-label" for="address">Address:</label>
+                    <input type="text" [(ngModel)]="address" id="address" class="form-control form-control-lg" placeholder=" address" />
+                </div>
+
+                <div class="form-outline mb-4">
+                    <label id="country" class="form-label" for="country">Country:</label>
+                    <input type="text" [(ngModel)]="country" id="country" class="form-control form-control-lg" placeholder=" country"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

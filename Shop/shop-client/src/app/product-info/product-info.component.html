@@ -1,0 +1,99 @@
+<!-- content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row gx-5">
+            <aside class="col-lg-6">
+                <div class="border rounded-4 mb-3 d-flex justify-content-center">
+                    <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image"
+                        href="{{ product.picture }}">
+                        <img *ngIf="product?.picture?.length > 0" style="width: 600px; height: 650px; margin: auto;" class="rounded-4 fit"
+                            src="{{ product.picture[0] }}" />
+                    </a>
+                </div>
+                <div class="d-flex justify-content-center mb-3">
+                    <a *ngFor="let prPic of product.picture" data-fslightbox="mygalley" class="border mx-1 rounded-2"
+                        target="_blank" data-type="image" href="{{ prPic }}" class="item-thumb">
+                        <img src="{{ prPic }}" width="60" height="60" class="rounded-2" />
+                    </a>
+                </div>
+
+            </aside>
+            <main class="col-lg-6">
+                <div class="ps-lg-3">
+                    <h4 class="title text-dark">
+                        {{ product.name }}
+                    </h4>
+
+                    <div class="mb-3 h5">
+                        <span>{{ product.price | currency: 'EUR'}}</span><span
+                            style="font-size: medium; font-weight: bold;"> · </span><span class="text-success">In
+                            stock</span>
+                    </div>
+                    <p>
+                        {{ product.description }}
+                    </p>
+
+                    <div class="row">
+                        <dt class="col-3">Type:</dt>
+                        <dd class="col-9">
+                            <div [ngSwitch]="product.type">
+                                <div *ngSwitchCase="'acousticguitar'">Acoustic guitar</div>
+                                <div *ngSwitchCase="'electricguitar'">Electric guitar</div>
+                                <div *ngSwitchCase="'bassguitar'">Bass guitar</div>
+                                <div *ngSwitchCase="'soprano'">Soprano ukulele</div>
+                                <div *ngSwitchCase="'concert'">Concert ukulele</div>
+                                <div *ngSwitchCase="'tenor'">Tenor ukulele</div>
+                                <div *ngSwitchCase="'acousticdrums'">Acosutic drums</div>
+                                <div *ngSwitchCase="'electronicdrums'">Electronic drums</div>
+                                <div *ngSwitchCase="'synthesizer'">Synthesizer</div>
+                                <div *ngSwitchCase="'acousticamp'">Acoustic amp</div>
+                                <div *ngSwitchCase="'electricamp'">Electric amp</div>
+                                <div *ngSwitchCase="'bassamp'">Bass amp</div>
+                                <div *ngSwitchCase="'microphone'">Microphone</div>
+                                <div *ngSwitchCase="'strings'">Strings</div>
+                                <div *ngSwitchCase="'capo'">Capo</div>
+                            </div>
+                        </dd>
+
+                        <dt class="col-3">Color:</dt>
+                        <dd class="col-9">{{ product.color }}</dd>
+
+                        <dt class="col-3">Manufacturer:</dt>
+                        <dd class="col-9">{{ product.manufacturer }}</dd>
+
+                        <dt class="col-3">Country of origin:</dt>
+                        <dd class="col-9">{{ product.countryOfOrigin}}</dd>
+                    </div>
+
+                    <hr />
+
+                    <div class="row mb-4">
+                        <div class="col-md-4 col-4">
+                            <label class="mb-2 d-block">Quantity:</label>
+                            <div class="input-group" style="width: 140px;">
+                                <button class="btn btn-dark border border-secondary px-3" type="button" id="button-dec"
+                                    (click)="decQuantity()" [disabled]="quantity === 1"
+                                    data-mdb-ripple-color="dark">
+                                    <span class="minus">-</span>
+                                </button>
+                                <input type="text" [(ngModel)]="quantity"
+                                    class="form-control text-center border border-secondary" />
+                                <button class="btn btn-dark border border-secondary px-3" type="button" id="button-inc"
+                                    (click)="incQuantity()" data-mdb-ripple-color="dark">
+                                    <span class="plus">+</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-lg" (click)="addToCart()" style="width:140px; margin-right:15px" [disabled]="!loggedIn">Add to cart</button>
+                    <button *ngIf="!isInFav;else InFavlist" type="button" class="btn btn-dark btn-lg" (click)="addToFavList()" style="margin-left:15px" [disabled]="!loggedIn">Add to wishlist</button>
+                    <ng-template #InFavlist>
+                        <button type="button" class="btn btn-danger btn-lg" (click)="removeFromFavList()" style="margin-left:15px">Remove from wishlist</button>
+                    </ng-template>
+                    
+                </div>
+            </main>
+        </div>
+    </div>
+</section>
+<!-- content -->

@@ -1,0 +1,161 @@
+<div class="bg-light">
+    <div class="d-flex flex-lg-row flex-column">
+        <div id="sidebar-div" class="flex-shrink-0 p-3 bg-white" style="width: 280px;">
+            <a class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+                <svg class="bi me-2" width="30" height="24">
+                    <use xlink:href="#bootstrap" />
+                </svg>
+                <span class="fs-5 fw-semibold">Categories</span>
+            </a>
+            <ul class="list-unstyled ps-0">
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#guitar-collapse" aria-expanded="false">
+                        Guitars
+                    </button>
+                    <div class="collapse" id="guitar-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><input class="checkbox" type="checkbox" id="acousticguitar" (click)="applyFilter('acousticguitar', $event)"><label
+                                    for="acoustic">Acoustic</label></li>
+                            <li><input class="checkbox" type="checkbox" id="electricguitar" (click)="applyFilter('electricguitar', $event)"><label
+                                    for="electric">Electric</label></li>
+                            <li><input class="checkbox" type="checkbox" id="bassguitar" (click)="applyFilter('bassguitar', $event)"><label for="bassguitar">Bass</label></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#ukulele-collapse" aria-expanded="false">
+                        Ukulele
+                    </button>
+                    <div class="collapse" id="ukulele-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><input class="checkbox" type="checkbox" id="soprano" (click)="applyFilter('soprano', $event)"><label
+                                    for="soprano">Soprano</label></li>
+                            <li><input class="checkbox" type="checkbox" id="concert" (click)="applyFilter('concert', $event)"><label
+                                    for="concert">Concert</label></li>
+                            <li><input class="checkbox" type="checkbox" id="tenor" (click)="applyFilter('tenor', $event)"><label for="tenor">Tenor</label></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#drums-collapse" aria-expanded="false">
+                        Drums
+                    </button>
+                    <div class="collapse" id="drums-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><input class="checkbox" type="checkbox" id="acousticdrums" (click)="applyFilter('acousticdrums', $event)"><label
+                                    for="acousticdrums">Acoustic</label></li>
+                            <li><input class="checkbox" type="checkbox" id="electronicdrums" (click)="applyFilter('electronicdrums', $event)"><label
+                                    for="electronicdrums">Electronic</label></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#keys-collapse" aria-expanded="false">
+                        Keyboards
+                    </button>
+                    <div class="collapse" id="keys-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><input class="checkbox" type="checkbox" id="synthesizer" (click)="applyFilter('synthesizer', $event)"><label
+                                    for="synthesizer">Synthesizer</label></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#amps-collapse" aria-expanded="false">
+                        Amps
+                    </button>
+                    <div class="collapse" id="amps-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><input class="checkbox" type="checkbox" id="acousticamp" (click)="applyFilter('acousticamp', $event)"><label
+                                    for="acousticamp">Acoustic</label></li>
+                            <li><input class="checkbox" type="checkbox" id="electricamp" (click)="applyFilter('electricamp', $event)"><label
+                                    for="electricamp">Electric</label></li>
+                            <li><input class="checkbox" type="checkbox" id="bassamp" (click)="applyFilter('bassamp', $event)"><label for="bassamp">Bass</label>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#other-collapse" aria-expanded="false">
+                        Other equipment
+                    </button>
+                    <div class="collapse" id="other-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><input class="checkbox" type="checkbox" id="microphone" (click)="applyFilter('microphone', $event)"><label
+                                    for="microphone">Microphone</label></li>
+                            <li><input class="checkbox" type="checkbox" id="strings" (click)="applyFilter('strings', $event)"><label
+                                    for="strings">Strings</label></li>
+                            <li><input class="checkbox" type="checkbox" id="capo" (click)="applyFilter('capo', $event)"><label for="capo">Capo</label></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="border-top my-3"></li>
+            </ul>
+        </div>
+
+
+        <!-- Product list -->
+        
+        <section class="w-100" style="background-color: white;">
+            <div class="text-center container py-5">
+                <div class="row">
+                    <select id="filter" style="width: 200px" class="mb-2" name="filter" (change)="onChange($event)">
+                        <option selected hidden>Choose filter</option>
+                        <option value="priceLH">Price Low to High</option>
+                        <option value="priceHL">Price High to Low</option>
+                        <option value="nameAZ">Name A-Z</option>
+                        <option value="nameZA">Name Z-A</option>
+                        <option value="brandAZ">Brands A-Z</option>
+                        <option value="brandZA">Brands Z-A</option>
+                    </select>
+                    <hr width="50%"/>
+                    <div *ngIf="(products | async)?.length === 0" class="d-flex justify-content-center" style="margin-top: 100px;">
+                        <h4>No products</h4>
+                    </div>
+                    <div *ngFor="let product of products | async" class="col-lg-3 mb-3">
+                        <div [routerLink]="['/product', product._id]" class="card  h-100">
+                            <div style="cursor:pointer;" class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                                data-mdb-ripple-color="light">
+                                <img *ngIf="product?.picture?.length > 0" src="{{ product.picture[0] }}" height="325" width="225px" class="w-100" />
+                                <a>
+                                    <div class="hover-overlay">
+                                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">{{ product.name }} </h5>
+
+                                <div [ngSwitch]="product.type">
+                                    <div *ngSwitchCase="'acousticguitar'">Acoustic guitar</div>
+                                    <div *ngSwitchCase="'electricguitar'">Electric guitar</div>
+                                    <div *ngSwitchCase="'bassguitar'">Bass guitar</div>
+                                    <div *ngSwitchCase="'soprano'">Soprano ukulele</div>
+                                    <div *ngSwitchCase="'concert'">Concert ukulele</div>
+                                    <div *ngSwitchCase="'tenor'">Tenor ukulele</div>
+                                    <div *ngSwitchCase="'acousticdrums'">Acosutic drums</div>
+                                    <div *ngSwitchCase="'electronicdrums'">Electronic drums</div>
+                                    <div *ngSwitchCase="'synthesizer'">Synthesizer</div>
+                                    <div *ngSwitchCase="'acousticamp'">Acoustic amp</div>
+                                    <div *ngSwitchCase="'electricamp'">Electric amp</div>
+                                    <div *ngSwitchCase="'bassamp'">Bass amp</div>
+                                    <div *ngSwitchCase="'microphone'">Microphone</div>
+                                    <div *ngSwitchCase="'strings'">Strings</div>
+                                    <div *ngSwitchCase="'capo'">Capo</div>
+                                </div>
+
+                                <h6 class="mb-3">{{ product.price | currency: 'EUR' }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

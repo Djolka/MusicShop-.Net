@@ -1,0 +1,84 @@
+<!-- Navbar -->
+<nav id="nav-div" class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Navbar brand -->
+            <a class="navbar-brand mt-2 mt-lg-0">
+                <img src="../../assets/guitarIcon.png" style="background-color: transparent;" height="50" width="60" alt="Logo" />
+            </a>
+            <!-- Left links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/']">Home</a>
+                </li>
+                <li class="nav-item">
+                    <button *ngIf="loggedIn" type="button" class="nav-link hover-button" [routerLink]="['/orders']" title="Log in to store your orders">My orders</button>
+                </li>
+            </ul>
+            <!-- Left links -->
+
+            <!-- Center element -->
+            <div class="">
+                <a id="title">Music Shop</a>
+            </div>
+            <!-- Center element -->
+        </div>
+
+
+        <!-- Right elements -->
+        <!-- Collapsible wrapper -->
+        <div class="d-flex input-group w-auto">
+            <div id="myDropdown" class="dropdown-content">
+                <input id="searchbar" [(ngModel)]="searchFilter" (keyup)="filterFunction()" type="search" name="search" class="form-control rounded" placeholder="Search">
+                <a (click)="getToItem(item._id)" *ngFor="let item of filteredItems">{{ item.name }}</a> <!-- [routerLink]="['/product/', item._id]"-->
+            </div>
+        </div>
+
+        <!-- Favorites icon -->
+        <div *ngIf="loggedIn" class="d-flex align-items-center">
+            <input *ngIf="favSize===0;else notEmptyFav" [routerLink]="['/favourites']" type="image"
+                src="../../assets/favourite.png" height="30px" width="30px" alt="favorite" />
+            <ng-template #notEmptyFav>
+                <input [routerLink]="['/favourites']" type="image" src="../../assets/favourite-full.png" height="30px"
+                    width="30px" alt="favorite" />
+                <span class="position-relative translate-middle badge bg-danger">
+                    {{ favSize }}
+                </span>
+            </ng-template>
+        </div>
+
+        <!-- Cart icon -->
+        <div *ngIf="loggedIn" class="d-flex align-items-center">
+            <input *ngIf="itemsSize===0; else notEmpty" [routerLink]="['/cart']" type="image"
+                src="../../assets/cart.svg" height="30px" width="30px" alt="cart" />
+            <ng-template #notEmpty>
+                <input [routerLink]="['/cart']" type="image" src="../../assets/cart-full.png" height="30px" width="30px"
+                    alt="cart" />
+                <span class="position-relative translate-middle badge bg-danger">
+                    {{ itemsSize }}
+                </span>
+            </ng-template>
+        </div>
+
+        <!-- Login dropdown -->
+        <div class="m-4">
+            <div class="dropdown">
+                <a *ngIf="!loggedIn; else userProfile " class="dropdown-toggle" data-bs-toggle="dropdown"><img src="../../assets/login.png" height="30" width="30" /></a>
+                <ng-template #userProfile>
+                    <a class="dropdown-toggle" data-bs-toggle="dropdown"><img src="../../assets/loggedIn.png" height="30" width="30" /></a>
+                </ng-template>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <button *ngIf="loggedIn;" class="dropdown-item" [routerLink]="['/profile']">My profile</button>
+                    <button *ngIf="!loggedIn;" class="dropdown-item" [routerLink]="['/login']">Log in</button>
+                    <button *ngIf="!loggedIn;" class="dropdown-item" [routerLink]="['/signup']">Sign up</button>
+                    <button *ngIf="loggedIn;" class="dropdown-item" (click)="logout();" [routerLink]="['/']">Log out</button>
+                </div>
+            </div>
+        </div>
+        <!-- Right elements -->
+    </div>
+    <!-- Container wrapper -->
+</nav>

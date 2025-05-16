@@ -18,13 +18,13 @@ export class OrderComponent implements OnInit {
 
 	constructor (private orderService: OrderService,
 				 private userService: UserService) {
-		
-	}
-
-	ngOnInit(): void {
 		this.orderService.getOrdersByCustomerID(this.userService.get_id()).subscribe(list => {
 			this.ordersList = list
 		})
+	}
+
+	ngOnInit(): void {
+		
 	}
 
 	public showOrder(order: Order) {
@@ -33,6 +33,7 @@ export class OrderComponent implements OnInit {
 		this.displayItems = order.products
 		this.totalPrice = order.totalPrice
 		this.selectedOrder = order;
+		console.log(this.selectedOrder)
 		
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}

@@ -32,11 +32,14 @@ export class ProductInfoComponent implements OnInit{
 			this.productService
 				.getProductById(this.pId)
 				.subscribe((product: Product) => this.product = product) 
+			this.productService.getProductById(this.pId).subscribe((product: Product) => {
+				this.product = product;
+				this.isInFavlist(this.product);
+			});
 		})
 	}
 
 	ngOnInit(): void {
-		this.isInFavlist(this.pId);
 		this.loggedIn = this.userService.get_id() !== null
 		this.userService.log.subscribe(login => {
 			this.loggedIn = login
@@ -58,7 +61,8 @@ export class ProductInfoComponent implements OnInit{
 	}
 
 	public addToFavList() {
-		this.favouritesService.addToFavList(this.product._id, this.userService.get_id()).subscribe(item => {
+		this.productService.getProductById(this.product.id).subscribe((product: Product) => this.product = product)
+		this.favouritesService.addToFavList(this.product, this.userService.get_id()).subscribe(item => {
 			Swal.fire(
 				'You have successfully added item to your wishlist!',
 				'',
@@ -69,7 +73,7 @@ export class ProductInfoComponent implements OnInit{
 	}
 
 	public removeFromFavList() {
-		this.favouritesService.removeFromFavList(this.product._id, this.userService.get_id()).subscribe(item => {
+		this.favouritesService.removeFromFavList(this.product.id, this.userService.get_id()).subscribe(item => {
 			Swal.fire(
 				'You have successfully removed item from your wishlist!',
 				'',
@@ -79,8 +83,8 @@ export class ProductInfoComponent implements OnInit{
 		this.isInFav = false
 	}
 
-	public isInFavlist(productId: String) {
-		this.favouritesService.isInFavList(productId, this.userService.get_id()).subscribe(item => {
+	public isInFavlist(product: Product) {
+		this.favouritesService.isInFavList(product, this.userService.get_id()).subscribe(item => {
 			this.isInFav = item.found
 		})
 	}

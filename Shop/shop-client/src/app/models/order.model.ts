@@ -1,7 +1,7 @@
 import { Product } from "./product.model";
 
 export class Order {
-    _id: string;
+    id: string;
     customerId: string;
     products: [Product];
     date: Date;

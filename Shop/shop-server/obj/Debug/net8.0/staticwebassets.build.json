@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "YrL67vXfJvwcronb2J5NQqP9Xexwbt39qpOpC73RMrM=",
+  "Source": "shop-server",
+  "BasePath": "_content/shop-server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

@@ -10,7 +10,7 @@
                         <div class="row">
                             <div class="col-md-12 col-lg-3 col-xl-3 mb-4 mb-lg-0">
                                 <div class="bg-image hover-zoom ripple rounded ripple-surface">
-                                    <img src="{{ item.product.picture }}"
+                                    <img src="{{ item?.product?.picture[0] }}"
                                         class="w-100" />
                                     <a href="#!">
                                         <div class="hover-overlay">
@@ -57,8 +57,9 @@
                                     <h4 class="mb-1 me-1">{{ item.product.price | currency }}</h4>
                                 </div>
                                 <div class="d-flex flex-column" style="margin-top:120px">
-                                    <button class="btn btn-primary btn-sm" [routerLink]="['/product', item.product._id]" type="button">Details</button>
-                                    <button class="btn btn-outline-danger btn-sm mt-2" (click)="removeFromFavList(item.product._id)" type="button"> 
+                                    <button class="btn btn-primary btn-sm" [routerLink]="['/product', item.product.id]" type="button">Details</button>
+                                    <!-- <pre>{{ (item.product.id as any)?.constructor?.name }}</pre> -->
+                                    <button class="btn btn-outline-danger btn-sm mt-2" (click)="removeFromFavList(item.product.id)" type="button"> 
                                         Remove from wishlist
                                     </button>
                                 </div>

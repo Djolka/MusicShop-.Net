@@ -16,10 +16,10 @@ export class FavouritesService {
 
 	constructor(private http: HttpClient) {}
 
-	public addToFavList(productId: String, userId: string): Observable<Favourites> {
+	public addToFavList(product: Product, userId: string): Observable<Favourites> {
 		let body = {
 			customerId: userId,
-			product: productId
+			product: product
 		}
 		let newFavItem = this.http.post<any>(this.favouritesUrl + 'addFavourites', body)
 		this.favListLength += 1
@@ -44,10 +44,10 @@ export class FavouritesService {
 		return delFav
 	}
 
-	public isInFavList(productId: String, userId: string) {
+	public isInFavList(product: Product, userId: string) {
 		let body = {
 			customerId: userId,
-			product: productId
+			product: product
 		}
 		return this.http.post<any>(this.favouritesUrl + 'findFavourite/', body)
 	}

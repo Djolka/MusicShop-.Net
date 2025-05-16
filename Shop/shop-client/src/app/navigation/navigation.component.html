@@ -33,7 +33,7 @@
         <div class="d-flex input-group w-auto">
             <div id="myDropdown" class="dropdown-content">
                 <input id="searchbar" [(ngModel)]="searchFilter" (keyup)="filterFunction()" type="search" name="search" class="form-control rounded" placeholder="Search">
-                <a (click)="getToItem(item._id)" *ngFor="let item of filteredItems">{{ item.name }}</a> <!-- [routerLink]="['/product/', item._id]"-->
+                <a (click)="getToItem(item.id)" *ngFor="let item of filteredItems">{{ item.name }}</a> <!-- [routerLink]="['/product/', item._id]"-->
             </div>
         </div>
 

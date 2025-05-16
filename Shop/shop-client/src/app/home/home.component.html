@@ -119,7 +119,7 @@
                         <h4>No products</h4>
                     </div>
                     <div *ngFor="let product of products | async" class="col-lg-3 mb-3">
-                        <div [routerLink]="['/product', product._id]" class="card  h-100">
+                        <div [routerLink]="['/product', product.id]" class="card  h-100">
                             <div style="cursor:pointer;" class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
                                 data-mdb-ripple-color="light">
                                 <img *ngIf="product?.picture?.length > 0" src="{{ product.picture[0] }}" height="325" width="225px" class="w-100" />

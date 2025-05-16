@@ -24,7 +24,7 @@ export class UserService extends HttpErrorHandler {
 	}
 
 	public addUserLocalStorage(user: User) {
-		localStorage.setItem("userId", user._id)
+		localStorage.setItem("userId", user.id)
 		localStorage.setItem("email", user.email)
 		this.log.emit(true)
 	}

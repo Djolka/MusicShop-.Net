@@ -19,7 +19,7 @@ export class CartService extends HttpErrorHandler {
 	}
 
 	public addToCart(product: Product) {
-		let foundSameItem = this.items.find(item => item._id === product._id)
+		let foundSameItem = this.items.find(item => item.id === product.id)
 		if(foundSameItem === undefined){
 			this.items.push(product)
 		} else {
@@ -52,7 +52,7 @@ export class CartService extends HttpErrorHandler {
 	}
 
 	public removeItem(id:string):void {
-		this.items = this.items.filter((item) => item._id !== id)
+		this.items = this.items.filter((item) => item.id !== id)
 		this.itemsSize.emit(this.items.length)
 	}
 

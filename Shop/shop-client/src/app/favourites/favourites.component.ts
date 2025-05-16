@@ -17,6 +17,7 @@ export class FavouritesComponent implements OnInit {
 	constructor(private favouritesService: FavouritesService,
 				private userService: UserService) {
 		this.favouritesService.getFavList(this.userService.get_id()).subscribe(list => {
+			console.log("Lista: " + list)
 			this.favList = list
 		})
 	}
@@ -24,9 +25,9 @@ export class FavouritesComponent implements OnInit {
 	ngOnInit(): void {
 		this.userService.log.subscribe(login => {
 			this.loggedIn = login
-			if(this.loggedIn === false) {
+			if (this.loggedIn === false) {
 				this.favList = []
-			}else {
+			} else {
 				
 			}
 		})

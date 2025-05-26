@@ -3,18 +3,19 @@ import { Product } from '../models/product.model';
 import { HttpClient } from '@angular/common/http';
 import { Favourites } from '../models/favourites.model';
 import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class FavouritesService {
 
-	@Output() favSize: EventEmitter<number> = new EventEmitter()
 	private favListLength: number = 0
+	public favSize = new BehaviorSubject<number>(this.favListLength);
 
 	private favouritesUrl = 'http://localhost:3000/favourites/'
 
-	constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient) { }
 
 	public addToFavList(product: Product, userId: string): Observable<Favourites> {
 		let body = {
@@ -23,24 +24,29 @@ export class FavouritesService {
 		}
 		let newFavItem = this.http.post<any>(this.favouritesUrl + 'addFavourites', body)
 		this.favListLength += 1
-		this.favSize.emit(this.favListLength)
+		this.favSize.next(this.favListLength)
 
 		return newFavItem
 	}
 
-	public getFavList(userId: string): Observable<Favourites[]>{
+	public getFavList(userId: string): Observable<Favourites[]> {
 		let res = this.http.get<Favourites[]>(this.favouritesUrl + 'getFavourites/' + userId)
-		res.subscribe(items => {
-			this.favListLength = items.length
-			this.favSize.emit(this.favListLength)
+		res.subscribe({
+			next: (items) => {
+				this.favListLength = items.length
+				this.favSize.next(this.favListLength)
+				
+			}, 
+			error: (err) => {
+				console.log(err)
+			}
 		})
 		return res
 	}
-	
+
 	public removeFromFavList(productId: String, userId: string) {
 		let delFav = this.http.delete<any>(this.favouritesUrl + 'deleteFavourite/' + userId + '/' + productId)
-		this.favListLength -= 1
-		this.favSize.emit(this.favListLength)
+		this.favSize.next(this.favListLength)
 		return delFav
 	}
 
@@ -52,7 +58,12 @@ export class FavouritesService {
 		return this.http.post<any>(this.favouritesUrl + 'findFavourite/', body)
 	}
 
+	public setFavListLength(length: number) {
+		this.favListLength = length;
+		this.favSize.next(length);
+	}
+
 	public clear() {
-		this.favSize.emit(0)
+		this.favSize.next(0)
 	}
 }

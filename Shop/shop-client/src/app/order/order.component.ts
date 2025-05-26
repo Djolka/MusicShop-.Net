@@ -33,7 +33,6 @@ export class OrderComponent implements OnInit {
 
 	public async showOrder(order: Order) {
 		this.displayItems = [];
-		console.log("Order: ", order);
 
 		for (const op of order.orderProducts) {
 			const product: Product = await firstValueFrom(this.productService.getProductById(op.productId));

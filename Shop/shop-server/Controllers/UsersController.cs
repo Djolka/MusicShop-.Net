@@ -102,7 +102,7 @@ namespace MusicShop.Controllers
 		}
 
 		[HttpPut("update/{id}")]
-		public async Task<ActionResult<User>> UpdateUser([FromBody] User updatedUser, string id)
+		public async Task<ActionResult<User>> UpdateUser([FromBody] UserUpdateDTO updatedUser, string id)
 		{
 			var user = await _context.Users.FindAsync(id);
 
@@ -110,14 +110,18 @@ namespace MusicShop.Controllers
 			{
 				return NotFound();
 			}
+            if (!string.IsNullOrEmpty(updatedUser.PhoneNumber)) { 
+				user.PhoneNumber = updatedUser.PhoneNumber;
+			}
 
-			user.Name = updatedUser.Name;
-			user.LastName = updatedUser.LastName;
-			user.Email = updatedUser.Email;
-			user.Password = user.Password = _passwordHasher.HashPassword(user, updatedUser.Password);
-			user.Address = updatedUser.Address;
-			user.PhoneNumber = updatedUser.PhoneNumber;
-			user.Country = updatedUser.Country;
+			if (!string.IsNullOrEmpty(updatedUser.Address)) { 
+				user.Address = updatedUser.Address;
+			}
+
+            if (!string.IsNullOrEmpty(updatedUser.Country))
+            {
+                user.Country = updatedUser.Country;
+            }
 
 			try
 			{

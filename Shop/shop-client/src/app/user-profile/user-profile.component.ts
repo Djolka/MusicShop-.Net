@@ -42,13 +42,22 @@ export class UserProfileComponent {
 	public submitForm(data: any) {
 		data = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null))
 		this.userService.updateUser(data)
-			.subscribe((user: User) => {
-				Swal.fire(
-					'Successfully updated your informations',
-					'Enjoy shopping!',
-					'success'
-				)
+			.subscribe({
+				next: () => {
+					Swal.fire(
+						'Successfully updated your informations',
+						'Enjoy shopping!',
+						'success'
+					)
+					this.router.navigate(['/'])
+				}, 
+				error: (err) => {
+					Swal.fire(
+						'Oops.. Something went wrong',
+						'Please try again later.',
+						'warning'
+					)
+				}
 			})
-		this.router.navigate(['/'])
 	}
 }

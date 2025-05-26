@@ -98,12 +98,6 @@ namespace MusicShop.Controllers
         [HttpGet("userOrders/{userId}")]
         public async Task<ActionResult<List<Order>>> GetOrderProductsByUser(string userId)
         {
-            //var orderProducts = await _context.OrderProducts
-            //    .Include(op => op.Order)
-            //    .Include(op => op.Product)
-            //    .Where(op => op.Order.CustomerId == userId)
-            //    .ToListAsync();
-
             var orders = await _context.Orders
                 .Where(o => o.CustomerId.Equals(userId))
                 .Include(o => o.OrderProducts)

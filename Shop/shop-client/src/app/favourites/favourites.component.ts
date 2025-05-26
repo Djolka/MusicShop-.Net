@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FavouritesService } from '../services/favourites.service';
 import { UserService } from '../services/user.service';
 import { Favourites } from '../models/favourites.model';
-import Swal  from 'sweetalert2';
+import Swal from 'sweetalert2';
 
 @Component({
 	selector: 'app-favourites',
@@ -15,9 +15,8 @@ export class FavouritesComponent implements OnInit {
 	public loggedIn: boolean
 
 	constructor(private favouritesService: FavouritesService,
-				private userService: UserService) {
+		private userService: UserService) {
 		this.favouritesService.getFavList(this.userService.get_id()).subscribe(list => {
-			console.log("Lista: " + list)
 			this.favList = list
 		})
 	}
@@ -28,21 +27,33 @@ export class FavouritesComponent implements OnInit {
 			if (this.loggedIn === false) {
 				this.favList = []
 			} else {
-				
+
 			}
 		})
 	}
 
 	public removeFromFavList(productId: String) {
-		this.favouritesService.removeFromFavList(productId, this.userService.get_id()).subscribe(item => {
-			Swal.fire(
-				'You have successfully removed item from your wishlist!',
-				'',
-				'success'
-			)
+		this.favouritesService.removeFromFavList(productId, this.userService.get_id()).subscribe({
+			next: () => {
+				Swal.fire(
+					'You have successfully removed item from your wishlist!',
+					'',
+					'success'
+				)
+				
+				this.favouritesService.getFavList(this.userService.get_id()).subscribe(items => {
+					this.favList = items;
+					this.favouritesService.setFavListLength(items.length);
+				});
+			},
+			error: (err) => {
+				Swal.fire(
+					'There was an error removing the item from your wishlist',
+					'',
+					'warning'
+				)
+			}
 		})
-		this.favouritesService.getFavList(this.userService.get_id()).subscribe(items => {
-			this.favList = items
-		})
+
 	}
 }

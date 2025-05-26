@@ -5,6 +5,6 @@
     "\\Data",
     "\\Models"
   ],
-  "SelectedNode": "\\Controllers\\FavouritesController.cs",
+  "SelectedNode": "\\Models\\UserUpdateDTO.cs",
   "PreviewInSolutionExplorer": false
 }

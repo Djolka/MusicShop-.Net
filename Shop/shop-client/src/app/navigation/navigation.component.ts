@@ -53,8 +53,8 @@ export class NavigationComponent implements OnInit{
 				this.favouritesService.clear()
 			} else {
 				this.favouritesService.getFavList(this.userService.get_id()).subscribe(items => {
-					this.favSize = items.length
-				})
+					this.favouritesService.setFavListLength(items.length);
+				});
 			}
 		})
 		this.cartService.itemsSize.subscribe(size => {

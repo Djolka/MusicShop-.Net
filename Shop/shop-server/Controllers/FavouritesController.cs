@@ -44,10 +44,6 @@ namespace MusicShop.Controllers
                                     .Where(f => f.CustomerId == id)
                                     .ToListAsync();
 
-            if (favsByUser == null || favsByUser.Count == 0) {
-                return NotFound();
-            }
-
             return Ok(favsByUser);
         }
 
@@ -81,7 +77,7 @@ namespace MusicShop.Controllers
 
             if (!found)
             {
-                return NotFound(new { found = false });
+                return Ok(new { found = false });
             }
 
             return Ok(new { found = true });

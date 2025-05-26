@@ -1,9 +1,9 @@
-import { Product } from "./product.model";
+import { OrderProduct } from "./orderProduct.model";
 
 export class Order {
     id: string;
     customerId: string;
-    products: [Product];
+    orderProducts: OrderProduct[];
     date: Date;
     totalPrice: number;
 }

@@ -51,6 +51,16 @@ export class UserService extends HttpErrorHandler {
 		return this.user
 	}
 
+	public loginUserById (id: string): Observable<User> {
+		return this.http.get<User>(this.usersURL + '/' + id)
+			.pipe(
+				catchError((error) => {
+					console.error('Error fetching user by ID:', error);
+					return of(null); // Return null or an empty observable in case of error
+				})
+			);
+	}
+
 	public updateUser(formData: User): Observable<User> { // profile settings
 		const body = {
 			...formData

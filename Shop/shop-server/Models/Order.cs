@@ -10,16 +10,16 @@ namespace MusicShop.Models
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        [Required(ErrorMessage = "CustomerID is required.")]
+        [Required]
         public required string CustomerId { get; set; }
 
-        [Required(ErrorMessage = "Products are required.")]
-        public required IEnumerable<Product> Products { get; set; }
-
-        [Required(ErrorMessage = "Date is required.")]
+        [Required]
         public required DateTime Date { get; set; }
 
-        [Required(ErrorMessage = "Total price is required.")]
+        [Required]
         public required double TotalPrice { get; set; }
+
+        public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     }
+
 }

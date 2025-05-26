@@ -12,7 +12,7 @@ using MusicShop.Data;
 namespace shop_server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250516145257_InitialCreate")]
+    [Migration("20250526153306_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -63,6 +63,24 @@ namespace shop_server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("MusicShop.Models.OrderProduct", b =>
+                {
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderProducts");
                 });
 
             modelBuilder.Entity("MusicShop.Models.Product", b =>
@@ -147,21 +165,6 @@ namespace shop_server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("OrderProduct", b =>
-                {
-                    b.Property<string>("OrdersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProductsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("OrdersId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("OrderProduct");
-                });
-
             modelBuilder.Entity("MusicShop.Models.Favourite", b =>
                 {
                     b.HasOne("MusicShop.Models.Product", "Product")
@@ -173,19 +176,33 @@ namespace shop_server.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("OrderProduct", b =>
+            modelBuilder.Entity("MusicShop.Models.OrderProduct", b =>
                 {
-                    b.HasOne("MusicShop.Models.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersId")
+                    b.HasOne("MusicShop.Models.Order", "Order")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MusicShop.Models.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
+                    b.HasOne("MusicShop.Models.Product", "Product")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("MusicShop.Models.Order", b =>
+                {
+                    b.Navigation("OrderProducts");
+                });
+
+            modelBuilder.Entity("MusicShop.Models.Product", b =>
+                {
+                    b.Navigation("OrderProducts");
                 });
 #pragma warning restore 612, 618
         }

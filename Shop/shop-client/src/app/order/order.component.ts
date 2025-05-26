@@ -3,6 +3,9 @@ import { OrderService } from '../services/order.service';
 import { Order } from '../models/order.model';
 import { UserService } from '../services/user.service';
 import { Product } from '../models/product.model';
+import { ProductService } from '../services/product.service';
+
+import { firstValueFrom } from 'rxjs';
 
 @Component({
 	selector: 'app-order',
@@ -12,29 +15,35 @@ import { Product } from '../models/product.model';
 export class OrderComponent implements OnInit {
 
 	public ordersList: Order[] = []
-	public displayItems: Product[] = []
+	public displayItems: any = []
 	public totalPrice: number
 	public selectedOrder: Order
 
-	constructor (private orderService: OrderService,
-				 private userService: UserService) {
+	constructor(private orderService: OrderService,
+		private userService: UserService,
+		private productService: ProductService) {
 		this.orderService.getOrdersByCustomerID(this.userService.get_id()).subscribe(list => {
-			this.ordersList = list
+			this.ordersList = list.sort((a, b) => a.date < b.date ? 1 : -1);
 		})
 	}
 
 	ngOnInit(): void {
-		
+
 	}
 
-	public showOrder(order: Order) {
-		this.displayItems = []
-		
-		this.displayItems = order.products
-		this.totalPrice = order.totalPrice
-		this.selectedOrder = order;
-		console.log(this.selectedOrder)
-		
-		window.scrollTo({ top: 0, behavior: 'smooth' });
+	public async showOrder(order: Order) {
+		this.displayItems = [];
+		console.log("Order: ", order);
+
+		for (const op of order.orderProducts) {
+			const product: Product = await firstValueFrom(this.productService.getProductById(op.productId));
+
+			if (product) {
+				this.displayItems.push({
+					...product,
+					quantity: op.quantity
+				});
+			}
+		}
 	}
 }

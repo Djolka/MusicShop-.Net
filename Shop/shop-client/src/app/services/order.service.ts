@@ -15,12 +15,23 @@ export class OrderService {
 	constructor(private http: HttpClient) { }
 
 	public createAnOrder(totalPrice: number, items: Product[], customerId: string): Observable<Order> { 
-		let body = {
+		const orderProducts = items.map(item => ({
+			productId: item.id,
+			quantity: item.quantity
+		}));
+
+		const body = {
 			customerId: customerId,
-			products: items,
+			orderProducts: orderProducts,
 			date: new Date(),
 			totalPrice: totalPrice
-		}
+		};
+		// let body = {
+		// 	customerId: customerId,
+		// 	products: items,
+		// 	date: new Date(),
+		// 	totalPrice: totalPrice
+		// }
 		return this.http.post<Order>(this.ordersUrl + 'createOrder/', body)
 	}
 

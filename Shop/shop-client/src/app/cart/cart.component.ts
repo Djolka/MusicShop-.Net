@@ -65,7 +65,7 @@ export class CartComponent {
 			Swal.fire(
 				'Please enter your address',
 				'',
-				'info'
+				'warning'
 			)
 			return
 		}
@@ -73,21 +73,30 @@ export class CartComponent {
 			Swal.fire(
 				'Please enter your country',
 				'',
-				'info'
+				'warning'
 			)
 			return
 		}
 
-		this.orderService.createAnOrder(this.totalPrice, this.items, this.userService.get_id()).subscribe(order => {
-			console.log(order)
-		})
-		this.cartService.clearCart()
-		this.items = []
-		this.totalPrice = 0
-		Swal.fire(
-			'You have successfully created an order',
-			'Enjoy playing :)',
-			'success'
-		)
+		this.orderService.createAnOrder(this.totalPrice, this.items, this.userService.get_id())
+			.subscribe({
+				next: (order) => {
+					Swal.fire(
+						'You have successfully created an order',
+						'Enjoy playing :)',
+						'success'
+					)
+					this.cartService.clearCart()
+					this.items = []
+					this.totalPrice = 0
+				},
+				error: (error) => {
+					Swal.fire(
+						`Error creating order`,
+						'Please try again later.',
+						'warning'
+					)
+				}
+			});
 	}
 }

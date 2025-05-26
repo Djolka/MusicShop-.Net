@@ -25,10 +25,15 @@ namespace MusicShop.Controllers
         }
 
         [HttpGet("getOrders")]
-        public async Task<ActionResult<List<Order>>> GetOrders() {
-            var orders = await _context.Orders.Include(o => o.Products).ToListAsync();
+        public async Task<ActionResult<List<Order>>> GetOrders()
+        {
+            var orders = await _context.Orders
+                .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product)
+                .ToListAsync();
 
-            if (orders == null) {
+            if (orders == null || !orders.Any())
+            {
                 return NotFound();
             }
 
@@ -36,16 +41,44 @@ namespace MusicShop.Controllers
         }
 
         [HttpPost("createOrder")]
-        public async Task<ActionResult<Order>> CreateOrder([FromBody] Order order) {
+        public async Task<ActionResult<Order>> CreateOrder([FromBody] Order order)
+        {
             try
             {
-                foreach (var product in order.Products) {
-                    _context.Attach(product);
-                }
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
+                // Step 1: Create order instance without order products
+                var newOrder = new Order
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    CustomerId = order.CustomerId,
+                    Date = order.Date,
+                    TotalPrice = order.TotalPrice,
+                };
 
-                return Ok(order);
+                _context.Orders.Add(newOrder);
+                await _context.SaveChangesAsync(); // Save to get the OrderId persisted
+
+                // Step 2: Create and add OrderProducts referencing the saved Order.Id
+                foreach (var op in order.OrderProducts)
+                {
+                    var orderProduct = new OrderProduct
+                    {
+                        OrderId = newOrder.Id,  // Now you have a valid orderId
+                        ProductId = op.ProductId,
+                        Quantity = op.Quantity
+                    };
+
+                    _context.OrderProducts.Add(orderProduct); // Assuming you have DbSet<OrderProduct> OrderProducts
+                }
+
+                await _context.SaveChangesAsync(); // Save all order products
+
+                // Optionally, load the order with products to return it
+                var createdOrder = await _context.Orders
+                    .Include(o => o.OrderProducts)
+                    .ThenInclude(op => op.Product)
+                    .FirstOrDefaultAsync(o => o.Id == newOrder.Id);
+
+                return Ok(createdOrder);
             }
             catch (Exception e)
             {
@@ -59,15 +92,32 @@ namespace MusicShop.Controllers
             }
         }
 
-        [HttpGet("userOrders/{id}")]
-        public async Task<ActionResult<List<Order>>> GetOrdersByUser(string id) {
-            var orders = await _context.Orders.Where(o => o.CustomerId.Equals(id)).Include(o => o.Products).ToListAsync();
-            if (orders == null) {
+
+
+
+        [HttpGet("userOrders/{userId}")]
+        public async Task<ActionResult<List<Order>>> GetOrderProductsByUser(string userId)
+        {
+            //var orderProducts = await _context.OrderProducts
+            //    .Include(op => op.Order)
+            //    .Include(op => op.Product)
+            //    .Where(op => op.Order.CustomerId == userId)
+            //    .ToListAsync();
+
+            var orders = await _context.Orders
+                .Where(o => o.CustomerId.Equals(userId))
+                .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product)
+                .ToListAsync();
+
+            if (orders == null || !orders.Any())
+            {
                 return NotFound();
             }
 
             return Ok(orders);
         }
+
 
 
         [HttpDelete("deleteOrders")]
@@ -76,8 +126,6 @@ namespace MusicShop.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
-        }
-
-        
+        }        
     }
 }

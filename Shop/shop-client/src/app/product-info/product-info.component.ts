@@ -7,6 +7,7 @@ import { CartService } from '../services/cart.service';
 import { FavouritesService } from '../services/favourites.service';
 import { UserService } from '../services/user.service';
 import Swal from 'sweetalert2';
+import { AuthService } from '../services/auth.service';
 
 @Component({
 	selector: 'app-product-info',
@@ -25,6 +26,7 @@ export class ProductInfoComponent implements OnInit {
 		private cartService: CartService,
 		private favouritesService: FavouritesService,
 		private userService: UserService,
+		private authService: AuthService,
 		private route: ActivatedRoute) {
 		this.route.paramMap.subscribe(params => {
 			this.pId = params.get('id')
@@ -40,8 +42,8 @@ export class ProductInfoComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.loggedIn = this.userService.get_id() !== null
-		this.userService.log.subscribe(login => {
+		this.loggedIn = this.authService.get_id() !== null
+		this.authService.log.subscribe(login => {
 			this.loggedIn = login
 		})
 	}
@@ -62,18 +64,26 @@ export class ProductInfoComponent implements OnInit {
 
 	public addToFavList() {
 		this.productService.getProductById(this.product.id).subscribe((product: Product) => this.product = product)
-		this.favouritesService.addToFavList(this.product, this.userService.get_id()).subscribe(item => {
-			Swal.fire(
-				'You have successfully added item to your wishlist!',
-				'',
-				'success'
-			)
+		this.favouritesService.addToFavList(this.product, this.authService.get_id()).subscribe({
+			next: (item) => {
+				Swal.fire(
+					'You have successfully added item to your wishlist!',
+					'',
+					'success'
+				)
+			}, error: (err) => {
+				Swal.fire(
+					'There was an error adding the item to your wishlist',
+					'',
+					'warning'
+				)
+			}
 		})
 		this.isInFav = true
 	}
 
 	public removeFromFavList() {
-		this.favouritesService.removeFromFavList(this.product.id, this.userService.get_id()).subscribe({
+		this.favouritesService.removeFromFavList(this.product.id, this.authService.get_id()).subscribe({
 			next: () => {
 				Swal.fire(
 					'You have successfully removed item from your wishlist!',
@@ -81,7 +91,7 @@ export class ProductInfoComponent implements OnInit {
 					'success'
 				)
 
-				this.favouritesService.getFavList(this.userService.get_id()).subscribe(items => {
+				this.favouritesService.getFavList(this.authService.get_id()).subscribe(items => {
 					this.favouritesService.setFavListLength(items.length);
 				});
 			},
@@ -98,7 +108,7 @@ export class ProductInfoComponent implements OnInit {
 	}
 
 	public isInFavlist(product: Product) {
-		this.favouritesService.isInFavList(product, this.userService.get_id()).subscribe(item => {
+		this.favouritesService.isInFavList(product, this.authService.get_id()).subscribe(item => {
 			this.isInFav = item.found
 		})
 	}

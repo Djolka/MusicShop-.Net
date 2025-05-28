@@ -6,6 +6,7 @@ import { Product } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 
 import { firstValueFrom } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 @Component({
 	selector: 'app-order',
@@ -21,8 +22,9 @@ export class OrderComponent implements OnInit {
 
 	constructor(private orderService: OrderService,
 		private userService: UserService,
-		private productService: ProductService) {
-		this.orderService.getOrdersByCustomerID(this.userService.get_id()).subscribe(list => {
+		private productService: ProductService,
+		private authService: AuthService) {
+		this.orderService.getOrdersByCustomerID(this.authService.get_id()).subscribe(list => {
 			this.ordersList = list.sort((a, b) => a.date < b.date ? 1 : -1);
 		})
 	}

@@ -10,22 +10,35 @@ using System.Linq.Expressions;
 using System.CodeDom;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using MusicShop.Services;
+using System.Text;
+
 
 namespace MusicShop.Controllers
 {
 	[ApiController]
+    [Authorize]
 	[Route("users")]
 	public class UsersController : ControllerBase
 	{
 		private readonly AppDbContext _context;
-		PasswordHasher<object> _passwordHasher = new PasswordHasher<object>();
+        private readonly IConfiguration _config;
+        private readonly JwtTokenService _jwtTokenService;
+        PasswordHasher<object> _passwordHasher = new PasswordHasher<object>();
 
-		public UsersController(AppDbContext context)
+		public UsersController(AppDbContext context, IConfiguration config, JwtTokenService jwtTokenService)
 		{
 			_context = context;
-		}
+            _config = config;
+			_jwtTokenService = jwtTokenService;
+        }
 
+		[AllowAnonymous]
 		[HttpGet("users")]
 		public async Task<ActionResult<List<User>>> GetUsers()
 		{
@@ -65,7 +78,8 @@ namespace MusicShop.Controllers
 			return Ok(new { found= true});
 		}
 
-		[HttpPost("login")]
+        [AllowAnonymous]
+        [HttpPost("login")]
 		public async Task<ActionResult<User>> LoginUser([FromBody] User user)
 		{
 			var userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(user.Email));
@@ -78,27 +92,30 @@ namespace MusicShop.Controllers
 			var checkPassword = _passwordHasher.VerifyHashedPassword(user, userFound.Password, user.Password);
 			if (checkPassword == PasswordVerificationResult.Success)
 			{
-				return Ok(userFound);
+                var token = _jwtTokenService.GenerateToken(userFound);
+                return Ok(new { token, user = userFound });
 			} else {
 				return NotFound();
 			}
 		}
 
-		[HttpPost("signup")]
+        [AllowAnonymous]
+        [HttpPost("signup")]
 		public async Task<ActionResult<User>> SignupUser([FromBody] User user)
 		{
 			var userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(user.Email));
 
 			if (userFound != null)
 			{
-				return BadRequest();
+				return BadRequest(new { message = "Signup failed" });
 			}
 
 			user.Password = _passwordHasher.HashPassword(user, user.Password);
 			_context.Users.Add(user);
 			await _context.SaveChangesAsync();
 
-			return Ok(user);
+            var token = _jwtTokenService.GenerateToken(user);
+            return Ok(new { token, user = user });
 		}
 
 		[HttpPut("update/{id}")]
@@ -134,6 +151,7 @@ namespace MusicShop.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpDelete("users")]
 		public async Task<ActionResult<List<User>>> DeleteAllUsers()
 		{
@@ -150,7 +168,7 @@ namespace MusicShop.Controllers
 			return Ok(usersToDelete);
 		}
 
-
+		[AllowAnonymous]
 		[HttpDelete("users/{id}")]
 		public async Task<IActionResult> DeleteUser(string id)
 		{
@@ -165,7 +183,5 @@ namespace MusicShop.Controllers
 
 			return Ok(new { message = "User deleted successfully" });
 		}
-
-
 	}
 }

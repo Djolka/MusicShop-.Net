@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Order } from '../models/order.model';
 import { Product } from '../models/product.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -10,9 +11,9 @@ import { Observable } from 'rxjs';
 export class OrderService {
 
 	public orderList: Order[] = []
-	private ordersUrl = 'http://localhost:3000/orders/'
+	private ordersUrl = 'https://localhost:5001/orders/'
 
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private authService: AuthService) { }
 
 	public createAnOrder(totalPrice: number, items: Product[], customerId: string): Observable<Order> { 
 		const orderProducts = items.map(item => ({
@@ -26,17 +27,19 @@ export class OrderService {
 			date: new Date(),
 			totalPrice: totalPrice
 		};
-		// let body = {
-		// 	customerId: customerId,
-		// 	products: items,
-		// 	date: new Date(),
-		// 	totalPrice: totalPrice
-		// }
-		return this.http.post<Order>(this.ordersUrl + 'createOrder/', body)
+
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+
+		return this.http.post<Order>(this.ordersUrl + 'createOrder/', body, { headers });
 	}
 
 	public getOrdersByCustomerID(id: any): Observable<Order[]>{
-		return this.http.get<Order[]>(this.ordersUrl + 'userOrders/'+ id)
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+		return this.http.get<Order[]>(this.ordersUrl + 'userOrders/'+ id, { headers })
 	}
 
 }

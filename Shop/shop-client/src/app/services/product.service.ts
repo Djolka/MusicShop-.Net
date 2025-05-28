@@ -13,7 +13,7 @@ import { HttpErrorHandler } from './http-error-handler.model';
 export class ProductService extends HttpErrorHandler{
 
 	private products: Observable<Product[]>;
-	private readonly productsUrl = 'http://localhost:3000/products/';
+	private readonly productsUrl = 'https://localhost:5001/products/';
 
 	constructor(private http: HttpClient, router: Router) { 
 		super(router)

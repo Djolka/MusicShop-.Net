@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../models/user.model';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { LoginResponse } from '../models/user-login.model';
+import { AuthService } from '../services/auth.service';
 
 @Component({
 	selector: 'app-user-login',
@@ -15,6 +17,7 @@ export class UserLoginComponent implements OnInit {
 	public checkoutForm: FormGroup
 
 	constructor(private userService: UserService,
+		private authService: AuthService,
 		private formBuilder: FormBuilder,
 		private router: Router) {
 		this.checkoutForm = this.formBuilder.group({
@@ -28,14 +31,16 @@ export class UserLoginComponent implements OnInit {
 	public submitForm(data: any) {
 		this.userService.getUserByEmailAndPassword(data)
 			.subscribe({
-				next: (user: User) => {
+				next: (data: LoginResponse) => {
 					Swal.fire(
-						'Welcome ' + user.name,
+						'Welcome ' + data.user.name,
 						'We are happy to see you :)!',
 						'success'
 					)
 					this.checkoutForm.reset()
-					this.userService.addUserLocalStorage(user)
+					console.log("Token: ", data.token)
+					console.log("User: ", data.user)
+					this.authService.setSession(data.token, data.user)
 					this.router.navigate(['/'])
 				},
 				error: (err) => {

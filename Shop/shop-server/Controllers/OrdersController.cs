@@ -9,11 +9,13 @@ using MusicShop.Data;
 using System.Linq.Expressions;
 using System.CodeDom;
 using System.Diagnostics.Eventing.Reader;
+using Microsoft.AspNetCore.Authorization;
 using System;
 
 namespace MusicShop.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("orders")]
     public class OrderController : ControllerBase
     {
@@ -24,6 +26,7 @@ namespace MusicShop.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         [HttpGet("getOrders")]
         public async Task<ActionResult<List<Order>>> GetOrders()
         {
@@ -92,9 +95,6 @@ namespace MusicShop.Controllers
             }
         }
 
-
-
-
         [HttpGet("userOrders/{userId}")]
         public async Task<ActionResult<List<Order>>> GetOrderProductsByUser(string userId)
         {
@@ -112,8 +112,7 @@ namespace MusicShop.Controllers
             return Ok(orders);
         }
 
-
-
+        [AllowAnonymous]
         [HttpDelete("deleteOrders")]
         public async Task<IActionResult> DeleteAllOrders() {
             _context.Orders.RemoveRange(_context.Orders);

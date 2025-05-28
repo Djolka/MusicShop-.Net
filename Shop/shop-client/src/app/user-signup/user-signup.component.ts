@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../models/user.model';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { AuthService } from '../services/auth.service';
+import { LoginResponse } from '../models/user-login.model';
 
 
 @Component({
@@ -18,6 +20,7 @@ export class UserSignupComponent implements OnInit{
 	public loggedIn: boolean = false
 
 	constructor (private userService: UserService,
+				 private authService: AuthService,
 				 private formBuilder: FormBuilder,
 				 private router: Router) {
 		this.checkoutForm = this.formBuilder.group({
@@ -34,14 +37,14 @@ export class UserSignupComponent implements OnInit{
 	public submitForm(data: any) {
 		this.userService.addUser(data)
 		  	.subscribe({
-				next: (user: User) => {
+				next: (data: LoginResponse) => {
 					Swal.fire(
-						'Welcome ' + user.name,
+						'Welcome ' + data.user.name,
 						'We are happy to see you :)!',
 						'success'
 					  )
 					this.checkoutForm.reset()
-					this.userService.addUserLocalStorage(user)
+					this.authService.setSession(data.token, data.user)
 					this.loggedIn = true
 					this.router.navigate(['/'])
 				},

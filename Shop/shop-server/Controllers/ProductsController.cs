@@ -9,6 +9,7 @@ using MusicShop.Data;
 using System.Linq.Expressions;
 using System.CodeDom;
 using System.Diagnostics.Eventing.Reader;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MusicShop.Controllers
 {

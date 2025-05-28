@@ -1,9 +1,10 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Product } from '../models/product.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Favourites } from '../models/favourites.model';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -13,16 +14,22 @@ export class FavouritesService {
 	private favListLength: number = 0
 	public favSize = new BehaviorSubject<number>(this.favListLength);
 
-	private favouritesUrl = 'http://localhost:3000/favourites/'
+	private favouritesUrl = 'https://localhost:5001/favourites/'
 
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private authService: AuthService) { }
 
 	public addToFavList(product: Product, userId: string): Observable<Favourites> {
 		let body = {
 			customerId: userId,
 			product: product
 		}
-		let newFavItem = this.http.post<any>(this.favouritesUrl + 'addFavourites', body)
+
+		console.log("cao")
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+		
+		let newFavItem = this.http.post<any>(this.favouritesUrl + 'addFavourites', body, { headers });
 		this.favListLength += 1
 		this.favSize.next(this.favListLength)
 
@@ -30,7 +37,11 @@ export class FavouritesService {
 	}
 
 	public getFavList(userId: string): Observable<Favourites[]> {
-		let res = this.http.get<Favourites[]>(this.favouritesUrl + 'getFavourites/' + userId)
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+
+		let res = this.http.get<Favourites[]>(this.favouritesUrl + 'getFavourites/' + userId, { headers })
 		res.subscribe({
 			next: (items) => {
 				this.favListLength = items.length
@@ -45,7 +56,11 @@ export class FavouritesService {
 	}
 
 	public removeFromFavList(productId: String, userId: string) {
-		let delFav = this.http.delete<any>(this.favouritesUrl + 'deleteFavourite/' + userId + '/' + productId)
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+
+		let delFav = this.http.delete<any>(this.favouritesUrl + 'deleteFavourite/' + userId + '/' + productId, { headers })
 		this.favSize.next(this.favListLength)
 		return delFav
 	}
@@ -55,7 +70,12 @@ export class FavouritesService {
 			customerId: userId,
 			product: product
 		}
-		return this.http.post<any>(this.favouritesUrl + 'findFavourite/', body)
+
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+
+		return this.http.post<any>(this.favouritesUrl + 'findFavourite/', body, { headers })
 	}
 
 	public setFavListLength(length: number) {

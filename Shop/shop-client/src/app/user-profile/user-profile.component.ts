@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 import { countries } from "countries-list";
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
 	selector: 'app-user-profile',
@@ -19,6 +20,7 @@ export class UserProfileComponent {
 	subscription: Subscription
 
 	constructor(private userService: UserService,
+		private authService: AuthService,
 		private formBuilder: FormBuilder,
 		private router: Router) {
 		this.refreshUser()
@@ -34,14 +36,15 @@ export class UserProfileComponent {
 	}
 
 	refreshUser() {
-		this.userService.getUserById().subscribe((user: User) => {
+		this.userService.getUserById(this.authService.get_id()).subscribe((user: User) => {
+			console.log("Djole: ", user)
 			this.user = user
 		})
 	}
 
 	public submitForm(data: any) {
 		data = Object.fromEntries(Object.entries(data).filter(([_, v]) => v != null))
-		this.userService.updateUser(data)
+		this.userService.updateUser(data, this.authService.get_id())
 			.subscribe({
 				next: () => {
 					Swal.fire(

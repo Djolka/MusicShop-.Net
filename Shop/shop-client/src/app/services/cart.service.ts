@@ -12,7 +12,6 @@ export class CartService extends HttpErrorHandler {
 
 	private items: Product[] = []
 	@Output() itemsSize: EventEmitter<number> = new EventEmitter()
-	private readonly ordersUrl = 'http://localhost:3000/cart/'
 
 	constructor(private http: HttpClient, router: Router) {
 		super(router)

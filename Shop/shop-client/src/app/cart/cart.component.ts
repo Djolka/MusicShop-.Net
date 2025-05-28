@@ -6,6 +6,7 @@ import { UserService } from '../services/user.service';
 import { User } from '../models/user.model';
 import { OrderService } from '../services/order.service';
 import Swal  from 'sweetalert2';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-cart',
@@ -24,6 +25,7 @@ export class CartComponent {
 	constructor (private cartService: CartService,
 				 private userService: UserService,
 				 private orderService: OrderService,
+				 private authService: AuthService,
 				 private formBuilder: FormBuilder) {
 		this.refreshUser()
 		
@@ -32,7 +34,7 @@ export class CartComponent {
 	}
 
 	refreshUser() {
-		this.userService.getUserById().subscribe((user:User) => {
+		this.userService.getUserById(this.authService.get_id()).subscribe((user:User) => {
 			this.user = user
 			this.phoneNumber = user.phoneNumber
 			this.address =  user.address
@@ -78,7 +80,7 @@ export class CartComponent {
 			return
 		}
 
-		this.orderService.createAnOrder(this.totalPrice, this.items, this.userService.get_id())
+		this.orderService.createAnOrder(this.totalPrice, this.items, this.authService.get_id())
 			.subscribe({
 				next: (order) => {
 					Swal.fire(

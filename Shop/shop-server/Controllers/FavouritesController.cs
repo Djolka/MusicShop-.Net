@@ -9,11 +9,13 @@ using MusicShop.Data;
 using System.Linq.Expressions;
 using System.CodeDom;
 using System.Diagnostics.Eventing.Reader;
+using Microsoft.AspNetCore.Authorization;
 using System;
 
 namespace MusicShop.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("favourites")]
     public class FavouritesController : ControllerBase
     {
@@ -24,6 +26,7 @@ namespace MusicShop.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         [HttpGet("getAllFavourites")]
         public async Task<ActionResult<List<Favourite>>> GetAllFavourites()
         {
@@ -101,6 +104,7 @@ namespace MusicShop.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpDelete("deleteAllFavourites")]
         public async Task<ActionResult<List<Favourite>>> DeleteAllFavourites()
         {

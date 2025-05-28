@@ -1,29 +1,56 @@
-import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { EventEmitter, Injectable, Output } from "@angular/core";
+import { Router } from "@angular/router";
+import { Observable } from "rxjs/internal/Observable";
+import { User } from "../models/user.model";
+import { LoginResponse } from "../models/user-login.model";
 
-// auth.service.ts
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private _isLoggedIn = false;
-    private _userId: any = null;
+    @Output() log: EventEmitter<any> = new EventEmitter()
+    
+    private TOKEN_KEY = 'token';
+    private USER_KEY = 'userId';
+    private EMAIL_KEY = 'email';
 
-    constructor() { }
+    constructor(private http: HttpClient, private router: Router) { }
 
-    public checkLocalStorage() {
-        const userId = localStorage.getItem('userId');
-        if (userId) {
-            this._userId = userId;
-            this._isLoggedIn = true;
-        } else {
-            this._isLoggedIn = false;
-            this._userId = null;
-        }
+    // login(credentials: { email: string; password: string }): Observable<User> {
+    //     return this.http.post<LoginResponse>('https://localhost:5001/users/login', credentials).pipe(
+    //         tap((res) => {
+    //             this.setSession(res.token, res.user);
+    //         })
+    //     );
+    // }
+
+    public setSession(token: string, user: User) {
+        localStorage.setItem(this.TOKEN_KEY, token);
+        localStorage.setItem(this.USER_KEY, user.id);
+        localStorage.setItem(this.EMAIL_KEY, user.email);
+
+        this.log.emit(true)
     }
 
-    public isLoggedIn(): boolean {
-        return this._isLoggedIn;
+    public get_id() {
+		return localStorage.getItem(this.USER_KEY)
+	}
+
+    logout() {
+        localStorage.clear()
+		this.log.emit(false)
     }
 
-    public getUser() {
-        return this._userId;
+
+    getToken(): string | null {
+        return localStorage.getItem(this.TOKEN_KEY);
     }
+
+    // getUser(): User | null {
+    //     const data = localStorage.getItem(this.USER_KEY);
+    //     return data ? JSON.parse(data) : null;
+    // }
+
+    // isAuthenticated(): boolean {
+    //     return !!this.getToken();
+    // }
 }

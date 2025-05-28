@@ -6,6 +6,7 @@ import { FavouritesService } from '../services/favourites.service';
 import Swal  from 'sweetalert2';
 import { Product } from '../models/product.model';
 import { ProductService } from '../services/product.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
 	selector: 'app-navigation',
@@ -25,19 +26,20 @@ export class NavigationComponent implements OnInit{
 	constructor (private userService: UserService,
 				 private favouritesService: FavouritesService,
 				 private cartService: CartService,
-				 private productService: ProductService,		 
+				 private productService: ProductService,
+				 private authService: AuthService,	 
 				 private router: Router) {
 		this.productService.getProducts().subscribe(items => {
 			this.items = items
 		})
-		if(this.userService.get_id() === undefined) {
+		if(this.authService.get_id() === undefined) {
 			this.loggedIn = true
 		}
 	}
 
 	public logout() {
 		this.loggedIn = false
-		this.userService.logOut()
+		this.authService.logout()
 		Swal.fire(
 			'You have logged out',
 			'Log in if you want to buy products or save your favourites',
@@ -47,12 +49,12 @@ export class NavigationComponent implements OnInit{
 	}
 
 	ngOnInit(): void {
-		this.userService.log.subscribe(login => {
+		this.authService.log.subscribe(login => {
 			this.loggedIn = login
 			if(this.loggedIn === false) {
 				this.favouritesService.clear()
 			} else {
-				this.favouritesService.getFavList(this.userService.get_id()).subscribe(items => {
+				this.favouritesService.getFavList(this.authService.get_id()).subscribe(items => {
 					this.favouritesService.setFavListLength(items.length);
 				});
 			}

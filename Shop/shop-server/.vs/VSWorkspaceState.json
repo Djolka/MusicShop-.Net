@@ -2,9 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\Controllers",
-    "\\Data",
-    "\\Models"
+    "\\Properties",
+    "\\Services"
   ],
-  "SelectedNode": "\\Models\\UserUpdateDTO.cs",
+  "SelectedNode": "\\Controllers\\UsersController.cs",
   "PreviewInSolutionExplorer": false
 }

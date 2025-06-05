@@ -38,8 +38,8 @@ export class NavigationComponent implements OnInit{
 	}
 
 	public logout() {
-		this.loggedIn = false
 		this.authService.logout()
+		this.loggedIn = false
 		Swal.fire(
 			'You have logged out',
 			'Log in if you want to buy products or save your favourites',

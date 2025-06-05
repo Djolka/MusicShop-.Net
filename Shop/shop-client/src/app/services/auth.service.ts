@@ -44,13 +44,4 @@ export class AuthService {
     getToken(): string | null {
         return localStorage.getItem(this.TOKEN_KEY);
     }
-
-    // getUser(): User | null {
-    //     const data = localStorage.getItem(this.USER_KEY);
-    //     return data ? JSON.parse(data) : null;
-    // }
-
-    // isAuthenticated(): boolean {
-    //     return !!this.getToken();
-    // }
 }

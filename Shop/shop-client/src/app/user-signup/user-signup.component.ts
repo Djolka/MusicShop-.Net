@@ -52,8 +52,8 @@ export class UserSignupComponent implements OnInit{
 					Swal.fire(
 						'Email already in use',
 						'Please try again with new email address',
-						'success'
-					  )
+						'warning'
+					)
 				},
 		  	})
 	}

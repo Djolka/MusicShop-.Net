@@ -24,7 +24,6 @@ export class FavouritesService {
 			product: product
 		}
 
-		console.log("cao")
 		const headers = new HttpHeaders({
 			'Authorization': `Bearer ${this.authService.getToken()}`
 		});

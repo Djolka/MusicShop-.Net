@@ -37,7 +37,6 @@ export class UserProfileComponent {
 
 	refreshUser() {
 		this.userService.getUserById(this.authService.get_id()).subscribe((user: User) => {
-			console.log("Djole: ", user)
 			this.user = user
 		})
 	}

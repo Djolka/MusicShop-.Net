@@ -19,7 +19,6 @@ export class AppComponent implements OnInit {
 		this.userId = this.authService.get_id();
 		if (this.userId) {
 			this.userService.getUserById(this.userId).subscribe((user) => {
-				console.log("Test: ", user)
 				if (user) {
 					this.user = user;
 					this.userService.userInfo = user;

@@ -70,10 +70,7 @@ export class UserService extends HttpErrorHandler {
 			'Authorization': `Bearer ${this.authService.getToken()}`
 		});
 
-		console.log("Token: ", this.authService.getToken())
-
 		this.user = this.http.put<User>(this.usersURL + 'update/' + id, body, { headers })
-
 		return this.user
 	}
 

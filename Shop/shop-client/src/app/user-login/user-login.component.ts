@@ -38,8 +38,6 @@ export class UserLoginComponent implements OnInit {
 						'success'
 					)
 					this.checkoutForm.reset()
-					console.log("Token: ", data.token)
-					console.log("User: ", data.user)
 					this.authService.setSession(data.token, data.user)
 					this.router.navigate(['/'])
 				},

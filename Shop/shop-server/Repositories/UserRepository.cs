@@ -8,7 +8,7 @@ namespace MusicShop.Repositories
     {
         public UserRepository(AppDbContext context) : base(context) { }
 
-        public async Task<User?> GetByEmailAsync(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
         }

@@ -49,14 +49,20 @@ namespace MusicShop.Controllers
         }
 
         [HttpPost("addFavourites")]
-        public async Task<ActionResult<Favourite>> AddFavourite([FromBody] Favourite fav)
+        public async Task<ActionResult<Favourite>> AddFavourite([FromBody] FavouriteDTO favDTO)
         {
             try
             {
-                await _favouriteRepository.AddAsync(fav);
+                var favourite = new Favourite
+                {
+                    CustomerId = favDTO.CustomerId,
+                    Product = favDTO.Product
+                };
+
+                await _favouriteRepository.AddAsync(favourite);
                 await _favouriteRepository.SaveChangesAsync();
 
-                return Ok(fav);
+                return Ok(favourite);
             }
             catch (Exception e)
             {
@@ -71,7 +77,7 @@ namespace MusicShop.Controllers
         }
 
         [HttpPost("findFavourite")]
-        public async Task<ActionResult<object>> FindFavourite([FromBody] Favourite fav)
+        public async Task<ActionResult<object>> FindFavourite([FromBody] FavouriteDTO fav)
         {
             var found = await _favouriteRepository.FindFavouriteAsync(fav);
 

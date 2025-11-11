@@ -26,7 +26,7 @@ namespace MusicShop.Repositories
             await _dbSet.AddAsync(fav);
         }
 
-        public async Task<bool> FindFavouriteAsync(Favourite fav)
+        public async Task<bool> FindFavouriteAsync(FavouriteDTO fav)
         {
             return await _dbSet.AnyAsync(f => f.CustomerId.Equals(fav.CustomerId) && f.Product.Id.Equals(fav.Product.Id));
         }

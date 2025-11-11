@@ -46,33 +46,32 @@ namespace MusicShop.Controllers
         }
 
         [HttpPost("createOrder")]
-        public async Task<ActionResult<Order>> CreateOrder([FromBody] Order order)
+        public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderDTO orderDto)
         {
-
             await _transactionRepository.BeginTransactionAsync();
 
             try
             {
-                // Create order instance without order products
+                // Create order entity
                 var newOrder = new Order
                 {
                     Id = Guid.NewGuid().ToString(),
-                    CustomerId = order.CustomerId,
-                    Date = order.Date,
-                    TotalPrice = order.TotalPrice,
+                    CustomerId = orderDto.CustomerId,
+                    Date = orderDto.Date,
+                    TotalPrice = orderDto.TotalPrice
                 };
 
                 await _orderRepository.AddAsync(newOrder);
                 await _orderRepository.SaveChangesAsync();
 
-                // Create and add OrderProducts referencing the saved Order.Id
-                foreach (var op in order.OrderProducts)
+                // Map OrderProducts
+                foreach (var opDto in orderDto.OrderProducts)
                 {
                     var orderProduct = new OrderProduct
                     {
-                        OrderId = newOrder.Id,  
-                        ProductId = op.ProductId,
-                        Quantity = op.Quantity
+                        OrderId = newOrder.Id,
+                        ProductId = opDto.ProductId!,
+                        Quantity = opDto.Quantity
                     };
 
                     await _orderProductsRepository.AddAsync(orderProduct);
@@ -82,10 +81,11 @@ namespace MusicShop.Controllers
 
                 await _transactionRepository.CommitAsync();
 
-                // Load the order with products to return it
+                // Load the order with products to return
                 var createdOrder = await _orderRepository.LoadNewOrderAsync(newOrder);
 
-                if (createdOrder == null) return NotFound("Order not found after creation.");
+                if (createdOrder == null)
+                    return NotFound("Order not found after creation.");
 
                 return Ok(createdOrder);
             }
@@ -101,6 +101,7 @@ namespace MusicShop.Controllers
                 });
             }
         }
+
 
         [HttpGet("userOrders/{userId}")]
         public async Task<ActionResult<List<Order>>> GetOrderProductsByUser(string userId)

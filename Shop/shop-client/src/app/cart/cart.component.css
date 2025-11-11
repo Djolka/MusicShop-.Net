@@ -208,3 +208,7 @@ ul {
     content: ' *';
     color: red;
 }
+
+.form-control {
+    padding-left: 15px;
+}

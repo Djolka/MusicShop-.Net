@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../models/user.model';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { LoginResponse } from '../models/user-login.model';
+import { LoginResponse } from '../models/user-login-response.model';
+import { UserLoginDTO } from '../models/user-login.model';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -28,8 +29,8 @@ export class UserLoginComponent implements OnInit {
 
 	ngOnInit(): void { }
 
-	public submitForm(data: any) {
-		this.userService.getUserByEmailAndPassword(data)
+	public submitForm(data: UserLoginDTO) {
+		this.userService.loginUser(data)
 			.subscribe({
 				next: (data: LoginResponse) => {
 					Swal.fire(

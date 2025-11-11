@@ -51,16 +51,16 @@ namespace MusicShop.Controllers
         [HttpGet("userByEmail/{email}")]
         public async Task<ActionResult<object>> GetUserByEmail(string email)
         {
-            var exists = await _userRepository.GetByEmailAsync(email);
+            var exists = await _userRepository.GetUserByEmailAsync(email);
             return Ok(new { found = exists });
         }
 
         // POST /users/login
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<User>> LoginUser([FromBody] User user)
+        public async Task<ActionResult<User>> LoginUser([FromBody] UserLoginDTO user)
         {
-            var userFound = await _userRepository.GetByEmailAsync(user.Email);
+            var userFound = await _userRepository.GetUserByEmailAsync(user.Email);
             if (userFound == null)
                 return NotFound(new { message = "User not found" });
 
@@ -75,13 +75,23 @@ namespace MusicShop.Controllers
         // POST /users/signup
         [AllowAnonymous]
         [HttpPost("signup")]
-        public async Task<ActionResult<User>> SignupUser([FromBody] User user)
+        public async Task<ActionResult<User>> SignupUser([FromBody] UserSignupDTO signupUserDTO)
         {
-            var exists = await _userRepository.GetByEmailAsync(user.Email);
+            var exists = await _userRepository.GetUserByEmailAsync(signupUserDTO.Email);
             if (exists != null)
                 return BadRequest(new { message = "Signup failed" });
 
-            user.Password = _passwordHasher.HashPassword(user, user.Password);
+            var user = new User
+            {
+                Name = signupUserDTO.Name,
+                LastName = signupUserDTO.LastName,
+                Email = signupUserDTO.Email,
+                Password = _passwordHasher.HashPassword(signupUserDTO, signupUserDTO.Password),
+                Address = string.Empty,
+                Country = string.Empty,
+                PhoneNumber = string.Empty
+            };
+
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
@@ -97,13 +107,13 @@ namespace MusicShop.Controllers
             if (user == null)
                 return NotFound();
 
-            if (!string.IsNullOrEmpty(updatedUser.PhoneNumber))
+            if (updatedUser.PhoneNumber != null)
                 user.PhoneNumber = updatedUser.PhoneNumber;
 
-            if (!string.IsNullOrEmpty(updatedUser.Address))
+            if (updatedUser.Address != null)
                 user.Address = updatedUser.Address;
 
-            if (!string.IsNullOrEmpty(updatedUser.Country))
+            if (updatedUser.Country != null)
                 user.Country = updatedUser.Country;
 
             //_userRepository.Update(user);

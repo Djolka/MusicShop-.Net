@@ -4,6 +4,7 @@ import { Product } from '../models/product.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { OrderDTO } from '../models/order-dto.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -21,7 +22,7 @@ export class OrderService {
 			quantity: item.quantity
 		}));
 
-		const body = {
+		const body: OrderDTO = {
 			customerId: customerId,
 			orderProducts: orderProducts,
 			date: new Date(),

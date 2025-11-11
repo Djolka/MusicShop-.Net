@@ -5,7 +5,8 @@ import { User } from '../models/user.model';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth.service';
-import { LoginResponse } from '../models/user-login.model';
+import { LoginResponse } from '../models/user-login-response.model';
+import { UserSignupDTO } from '../models/user-signup-model';
 
 
 @Component({
@@ -34,7 +35,7 @@ export class UserSignupComponent implements OnInit{
 
 	ngOnInit(): void {}
 
-	public submitForm(data: any) {
+	public submitForm(data: UserSignupDTO) {
 		this.userService.addUser(data)
 		  	.subscribe({
 				next: (data: LoginResponse) => {

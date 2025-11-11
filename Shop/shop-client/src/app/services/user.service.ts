@@ -4,7 +4,10 @@ import { Router } from '@angular/router';
 import { HttpErrorHandler } from './http-error-handler.model';
 import { Observable, catchError, of } from 'rxjs';
 import { User } from '../models/user.model'
-import { LoginResponse } from '../models/user-login.model';
+import { UpdateUserDTO } from '../models/update-user.model';
+import { LoginResponse } from '../models/user-login-response.model';
+import { UserLoginDTO } from '../models/user-login.model';
+import { UserSignupDTO } from '../models/user-signup-model';
 import { AuthService } from './auth.service';
 
 
@@ -25,7 +28,7 @@ export class UserService extends HttpErrorHandler {
 		super(router)
 	}
 
-	public addUser(formData: any): Observable<LoginResponse> { // signup
+	public addUser(formData: UserSignupDTO): Observable<LoginResponse> { // signup
 		const body = {
 			...formData
 		}
@@ -44,7 +47,7 @@ export class UserService extends HttpErrorHandler {
 		});
 	}
 
-	public getUserByEmailAndPassword(formData: any): Observable<LoginResponse> {
+	public loginUser(formData: UserLoginDTO): Observable<LoginResponse> { // login
 		const body = { ...formData };
 
 		return new Observable<LoginResponse>((observer) => {
@@ -61,10 +64,11 @@ export class UserService extends HttpErrorHandler {
 		});
 	}
 
-	public updateUser(formData: User, id: string): Observable<User> { // profile settings
+	public updateUser(formData: UpdateUserDTO, id: string): Observable<User> { // profile settings
 		const body = {
 			...formData
 		}
+		console.log(body)
 		
 		const headers = new HttpHeaders({
 			'Authorization': `Bearer ${this.authService.getToken()}`

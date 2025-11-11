@@ -5,6 +5,7 @@ import { Favourites } from '../models/favourites.model';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from './auth.service';
+import { FavouriteDTO } from '../models/favourites-dto.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -19,7 +20,7 @@ export class FavouritesService {
 	constructor(private http: HttpClient, private authService: AuthService) { }
 
 	public addToFavList(product: Product, userId: string): Observable<Favourites> {
-		let body = {
+		let body: FavouriteDTO = {
 			customerId: userId,
 			product: product
 		}
@@ -65,7 +66,7 @@ export class FavouritesService {
 	}
 
 	public isInFavList(product: Product, userId: string) {
-		let body = {
+		let body: FavouriteDTO = {
 			customerId: userId,
 			product: product
 		}

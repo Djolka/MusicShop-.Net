@@ -19,7 +19,7 @@ namespace MusicShop.Services
 
         public string GenerateToken(User user)
         {
-            var jwtKey = _configuration["Jwt:Key"];
+            var jwtKey = _configuration["Jwt:Key"]!;
             var jwtIssuer = _configuration["Jwt:Issuer"];
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));

@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using MusicShop.Data;
 using MusicShop.Models;
+using MusicShop.Repositories;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MusicShop.Data;
 using System.Linq.Expressions;
 using System.CodeDom;
 using System.Diagnostics.Eventing.Reader;
@@ -17,17 +18,17 @@ namespace MusicShop.Controllers
     [Route("products")]
     public class ProductController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IProductRepository _productRepository;
 
-        public ProductController(AppDbContext context)
+        public ProductController(IProductRepository productRepository)
         {
-            _context = context;
+            _productRepository = productRepository;
         }
 
         [HttpGet("productList")]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            var products = await _context.Products.ToListAsync();
+            var products = await _productRepository.GetAllAsync();
             if (products == null)
             {
                 return NotFound();
@@ -38,7 +39,7 @@ namespace MusicShop.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProductById(string id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _productRepository.GetByIdAsync(id);
 
             if (product == null)
             {
@@ -50,8 +51,8 @@ namespace MusicShop.Controllers
         [HttpPost("insertMany")]
         public async Task<IActionResult> InsertProducts([FromBody] IEnumerable<Product> products)
         {
-            _context.Products.AddRange(products);
-            await _context.SaveChangesAsync();
+            _productRepository.InsertProducts(products);
+            await _productRepository.SaveChangesAsync();
 
             return Ok();
         }
@@ -59,8 +60,8 @@ namespace MusicShop.Controllers
         [HttpDelete("deleteAllProducts")]
         public async Task<IActionResult> DeleteAllProducts()
         {
-            _context.Products.RemoveRange(_context.Products);
-            await _context.SaveChangesAsync();
+            await _productRepository.DeleteAllAsync();
+            await _productRepository.SaveChangesAsync();
 
             return Ok();
         }
@@ -69,16 +70,12 @@ namespace MusicShop.Controllers
         public async Task<ActionResult<IEnumerable<Product>>> FilterProducts([FromBody] Dictionary<string, int> filter)
         {
 
-            var filterArray = new List<string>();
-            foreach (var field in filter) {
-                if (field.Value == 1) { 
-                    filterArray.Add(field.Key);
-                }
-            }
+            var filterArray = filter
+                            .Where(f => f.Value == 1)
+                            .Select(f => f.Key)
+                            .ToList();
 
-            var products = await _context.Products
-                                            .Where(elem => filterArray.Contains(elem.Type))
-                                            .ToListAsync();
+            var products = await _productRepository.FilterProductsAsync(filterArray);
 
             if (products == null) {
                 return NotFound();

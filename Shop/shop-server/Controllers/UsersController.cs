@@ -1,187 +1,144 @@
 using Microsoft.AspNetCore.Mvc;
-using MusicShop.Models;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MusicShop.Data;
-using System.Linq.Expressions;
-using System.CodeDom;
-using System.Diagnostics.Eventing.Reader;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using MusicShop.Models;
+using MusicShop.Repositories;
 using MusicShop.Services;
-using System.Text;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MusicShop.Controllers
 {
-	[ApiController]
+    [ApiController]
     [Authorize]
-	[Route("users")]
-	public class UsersController : ControllerBase
-	{
-		private readonly AppDbContext _context;
-        private readonly IConfiguration _config;
+    [Route("users")]
+    public class UsersController : ControllerBase
+    {
+        private readonly IUserRepository _userRepository;
         private readonly JwtTokenService _jwtTokenService;
-        PasswordHasher<object> _passwordHasher = new PasswordHasher<object>();
+        private readonly PasswordHasher<object> _passwordHasher = new PasswordHasher<object>();
 
-		public UsersController(AppDbContext context, IConfiguration config, JwtTokenService jwtTokenService)
-		{
-			_context = context;
-            _config = config;
-			_jwtTokenService = jwtTokenService;
+        public UsersController(IUserRepository userRepository, JwtTokenService jwtTokenService)
+        {
+            _userRepository = userRepository;
+            _jwtTokenService = jwtTokenService;
         }
 
-		[AllowAnonymous]
-		[HttpGet("users")]
-		public async Task<ActionResult<List<User>>> GetUsers()
-		{
-			var users = await _context.Users.ToListAsync();
+        // GET /users/users
+        [AllowAnonymous]
+        [HttpGet("users")]
+        public async Task<ActionResult<List<User>>> GetUsers()
+        {
+            var users = await _userRepository.GetAllAsync();
+            if (users == null)
+                return NotFound();
 
-			if (users == null)
-			{
-				return NotFound();
-			}
+            return Ok(users);
+        }
 
-			return Ok(users);
-		}
+        // GET /users/user/{id}
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<User>> GetUserById(string id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+                return NotFound();
 
-		[HttpGet("user/{id}")]
-		public async Task<ActionResult<User>> GetUserById(string id)
-		{
-			var user = await _context.Users.FindAsync(id);
+            return Ok(user);
+        }
 
-			if (user == null)
-			{
-				return NotFound();
-			}
+        // GET /users/userByEmail/{email}
+        [HttpGet("userByEmail/{email}")]
+        public async Task<ActionResult<object>> GetUserByEmail(string email)
+        {
+            var exists = await _userRepository.GetByEmailAsync(email);
+            return Ok(new { found = exists });
+        }
 
-			return Ok(user);
-		}
-
-		[HttpGet("userByEmail/{email}")]
-		public async Task<ActionResult<object>> GetUserByEmail(string email)
-		{
-			var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
-
-			if (user == null)
-			{
-				return NotFound(new { found= false});
-			}
-
-			return Ok(new { found= true});
-		}
-
+        // POST /users/login
         [AllowAnonymous]
         [HttpPost("login")]
-		public async Task<ActionResult<User>> LoginUser([FromBody] User user)
-		{
-			var userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(user.Email));
+        public async Task<ActionResult<User>> LoginUser([FromBody] User user)
+        {
+            var userFound = await _userRepository.GetByEmailAsync(user.Email);
+            if (userFound == null)
+                return NotFound(new { message = "User not found" });
 
-			if (userFound == null)
-			{
-				return NotFound(new { message= "User not found"});
-			}
+            var checkPassword = _passwordHasher.VerifyHashedPassword(user, userFound.Password, user.Password);
+            if (checkPassword != PasswordVerificationResult.Success)
+                return Unauthorized(new { message = "Invalid password" });
 
-			var checkPassword = _passwordHasher.VerifyHashedPassword(user, userFound.Password, user.Password);
-			if (checkPassword == PasswordVerificationResult.Success)
-			{
-                var token = _jwtTokenService.GenerateToken(userFound);
-                return Ok(new { token, user = userFound });
-			} else {
-				return NotFound();
-			}
-		}
+            var token = _jwtTokenService.GenerateToken(userFound);
+            return Ok(new { token, user = userFound });
+        }
 
+        // POST /users/signup
         [AllowAnonymous]
         [HttpPost("signup")]
-		public async Task<ActionResult<User>> SignupUser([FromBody] User user)
-		{
-			var userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(user.Email));
+        public async Task<ActionResult<User>> SignupUser([FromBody] User user)
+        {
+            var exists = await _userRepository.GetByEmailAsync(user.Email);
+            if (exists != null)
+                return BadRequest(new { message = "Signup failed" });
 
-			if (userFound != null)
-			{
-				return BadRequest(new { message = "Signup failed" });
-			}
-
-			user.Password = _passwordHasher.HashPassword(user, user.Password);
-			_context.Users.Add(user);
-			await _context.SaveChangesAsync();
+            user.Password = _passwordHasher.HashPassword(user, user.Password);
+            await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
 
             var token = _jwtTokenService.GenerateToken(user);
-            return Ok(new { token, user = user });
-		}
+            return Ok(new { token, user });
+        }
 
-		[HttpPut("update/{id}")]
-		public async Task<ActionResult<User>> UpdateUser([FromBody] UserUpdateDTO updatedUser, string id)
-		{
-			var user = await _context.Users.FindAsync(id);
+        // PUT /users/update/{id}
+        [HttpPut("update/{id}")]
+        public async Task<ActionResult<User>> UpdateUser([FromBody] UserUpdateDTO updatedUser, string id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+                return NotFound();
 
-			if (user == null)
-			{
-				return NotFound();
-			}
-            if (!string.IsNullOrEmpty(updatedUser.PhoneNumber)) { 
-				user.PhoneNumber = updatedUser.PhoneNumber;
-			}
+            if (!string.IsNullOrEmpty(updatedUser.PhoneNumber))
+                user.PhoneNumber = updatedUser.PhoneNumber;
 
-			if (!string.IsNullOrEmpty(updatedUser.Address)) { 
-				user.Address = updatedUser.Address;
-			}
+            if (!string.IsNullOrEmpty(updatedUser.Address))
+                user.Address = updatedUser.Address;
 
             if (!string.IsNullOrEmpty(updatedUser.Country))
-            {
                 user.Country = updatedUser.Country;
-            }
 
-			try
-			{
-				await _context.SaveChangesAsync();
-				return Ok(user);
-			}
-			catch (DbUpdateException ex)
-			{
-				return StatusCode(500, $"Internal server error: {ex.Message}");
-			}
-		}
+            //_userRepository.Update(user);
+            await _userRepository.SaveChangesAsync();
 
-		[AllowAnonymous]
-		[HttpDelete("users")]
-		public async Task<ActionResult<List<User>>> DeleteAllUsers()
-		{
-			var usersToDelete = await _context.Users.ToListAsync();
+            return Ok(user);
+        }
 
-			if (usersToDelete.Count == 0)
-			{
-				return NotFound("No users found to delete.");
-			}
+        // DELETE /users/users
+        [AllowAnonymous]
+        [HttpDelete("users")]
+        public async Task<ActionResult> DeleteAllUsers()
+        {
+            var deletedCount = await _userRepository.DeleteAllAsync();
 
-			_context.Users.RemoveRange(usersToDelete);
-			await _context.SaveChangesAsync();
+            if (deletedCount == 0)
+                return NotFound("No users found to delete.");
 
-			return Ok(usersToDelete);
-		}
+            return Ok($"Deleted {deletedCount} users.");
+        }
 
-		[AllowAnonymous]
-		[HttpDelete("users/{id}")]
-		public async Task<IActionResult> DeleteUser(string id)
-		{
-			var user = await _context.Users.FindAsync(id);
-			if (user == null)
-			{
-				return NotFound(new { message = "User not found" });
-			}
 
-			_context.Users.Remove(user);
-			await _context.SaveChangesAsync();
+        // DELETE /users/users/{id}
+        [AllowAnonymous]
+        [HttpDelete("users/{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+                return NotFound(new { message = "User not found" });
 
-			return Ok(new { message = "User deleted successfully" });
-		}
-	}
+            _userRepository.Delete(user);
+            await _userRepository.SaveChangesAsync();
+
+            return Ok(new { message = "User deleted successfully" });
+        }
+    }
 }

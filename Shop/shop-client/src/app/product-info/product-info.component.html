@@ -79,7 +79,7 @@
                                 <input type="text" [(ngModel)]="quantity"
                                     class="form-control text-center border border-secondary" />
                                 <button class="btn btn-dark border border-secondary px-3" type="button" id="button-inc"
-                                    (click)="incQuantity()" data-mdb-ripple-color="dark">
+                                    (click)="incQuantity()" [disabled]="loggedIn === false" data-mdb-ripple-color="dark">
                                     <span class="plus">+</span>
                                 </button>
                             </div>

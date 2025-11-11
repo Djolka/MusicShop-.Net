@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using MusicShop.Data;
 using MusicShop.Services;
+using MusicShop.Repositories;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +55,13 @@ builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderProductsRepository, OrderProductsRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

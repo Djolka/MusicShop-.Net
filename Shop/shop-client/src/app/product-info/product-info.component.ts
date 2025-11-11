@@ -36,7 +36,9 @@ export class ProductInfoComponent implements OnInit {
 				.subscribe((product: Product) => this.product = product)
 			this.productService.getProductById(this.pId).subscribe((product: Product) => {
 				this.product = product;
-				this.isInFavlist(this.product);
+				if (this.loggedIn) {
+					this.isInFavlist(this.product);
+				}
 			});
 		})
 	}
@@ -49,17 +51,17 @@ export class ProductInfoComponent implements OnInit {
 	}
 
 	public decQuantity() {
-		this.quantity -= 1
+		this.quantity = Number(this.quantity) - 1
 	}
 
 	public incQuantity() {
-		this.quantity += 1
+		this.quantity = Number(this.quantity) + 1
 	}
 
 	public addToCart() {
-		this.product.quantity = this.quantity
-		this.quantity = 1
+		this.product.quantity = Number(this.quantity);
 		this.cartService.addToCart(this.product)
+		this.quantity = 1
 	}
 
 	public addToFavList() {

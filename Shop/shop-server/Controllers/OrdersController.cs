@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MusicShop.Models;
+using MusicShop.Repositories;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Linq;
@@ -19,21 +20,22 @@ namespace MusicShop.Controllers
     [Route("orders")]
     public class OrderController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderProductsRepository _orderProductsRepository;
+        private readonly ITransactionRepository _transactionRepository;
 
-        public OrderController(AppDbContext context)
+        public OrderController(IOrderRepository orderRepository, IOrderProductsRepository orderProductsRepository, ITransactionRepository transactionRepository)
         {
-            _context = context;
+            _orderRepository = orderRepository;
+            _orderProductsRepository = orderProductsRepository;
+            _transactionRepository = transactionRepository;
         }
 
         [AllowAnonymous]
         [HttpGet("getOrders")]
         public async Task<ActionResult<List<Order>>> GetOrders()
         {
-            var orders = await _context.Orders
-                .Include(o => o.OrderProducts)
-                .ThenInclude(op => op.Product)
-                .ToListAsync();
+            var orders = await _orderRepository.GetAllAsync();
 
             if (orders == null || !orders.Any())
             {
@@ -46,9 +48,12 @@ namespace MusicShop.Controllers
         [HttpPost("createOrder")]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] Order order)
         {
+
+            await _transactionRepository.BeginTransactionAsync();
+
             try
             {
-                // Step 1: Create order instance without order products
+                // Create order instance without order products
                 var newOrder = new Order
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -57,34 +62,36 @@ namespace MusicShop.Controllers
                     TotalPrice = order.TotalPrice,
                 };
 
-                _context.Orders.Add(newOrder);
-                await _context.SaveChangesAsync(); // Save to get the OrderId persisted
+                await _orderRepository.AddAsync(newOrder);
+                await _orderRepository.SaveChangesAsync();
 
-                // Step 2: Create and add OrderProducts referencing the saved Order.Id
+                // Create and add OrderProducts referencing the saved Order.Id
                 foreach (var op in order.OrderProducts)
                 {
                     var orderProduct = new OrderProduct
                     {
-                        OrderId = newOrder.Id,  // Now you have a valid orderId
+                        OrderId = newOrder.Id,  
                         ProductId = op.ProductId,
                         Quantity = op.Quantity
                     };
 
-                    _context.OrderProducts.Add(orderProduct); // Assuming you have DbSet<OrderProduct> OrderProducts
+                    await _orderProductsRepository.AddAsync(orderProduct);
                 }
 
-                await _context.SaveChangesAsync(); // Save all order products
+                await _orderProductsRepository.SaveChangesAsync();
 
-                // Optionally, load the order with products to return it
-                var createdOrder = await _context.Orders
-                    .Include(o => o.OrderProducts)
-                    .ThenInclude(op => op.Product)
-                    .FirstOrDefaultAsync(o => o.Id == newOrder.Id);
+                await _transactionRepository.CommitAsync();
+
+                // Load the order with products to return it
+                var createdOrder = await _orderRepository.LoadNewOrderAsync(newOrder);
+
+                if (createdOrder == null) return NotFound("Order not found after creation.");
 
                 return Ok(createdOrder);
             }
             catch (Exception e)
             {
+                await _transactionRepository.RollbackAsync();
                 return BadRequest(new
                 {
                     error = "An error occurred while saving the order.",
@@ -98,11 +105,7 @@ namespace MusicShop.Controllers
         [HttpGet("userOrders/{userId}")]
         public async Task<ActionResult<List<Order>>> GetOrderProductsByUser(string userId)
         {
-            var orders = await _context.Orders
-                .Where(o => o.CustomerId.Equals(userId))
-                .Include(o => o.OrderProducts)
-                .ThenInclude(op => op.Product)
-                .ToListAsync();
+            var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
 
             if (orders == null || !orders.Any())
             {
@@ -115,8 +118,7 @@ namespace MusicShop.Controllers
         [AllowAnonymous]
         [HttpDelete("deleteOrders")]
         public async Task<IActionResult> DeleteAllOrders() {
-            _context.Orders.RemoveRange(_context.Orders);
-            await _context.SaveChangesAsync();
+            await _orderRepository.DeleteAllAsync();
 
             return Ok();
         }        

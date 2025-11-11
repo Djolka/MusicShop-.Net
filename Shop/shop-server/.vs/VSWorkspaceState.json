@@ -3,10 +3,10 @@
     "",
     "\\Controllers",
     "\\Data",
+    "\\Migrations",
     "\\Models",
-    "\\Properties",
     "\\Services"
   ],
-  "SelectedNode": "\\Controllers\\ProductsController.cs",
+  "SelectedNode": "\\Controllers\\UsersController.cs",
   "PreviewInSolutionExplorer": false
 }

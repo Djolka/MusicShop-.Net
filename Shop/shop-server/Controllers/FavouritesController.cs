@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MusicShop.Models;
+using MusicShop.Repositories;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Linq;
@@ -19,18 +20,18 @@ namespace MusicShop.Controllers
     [Route("favourites")]
     public class FavouritesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IFavouriteRepository _favouriteRepository;
 
-        public FavouritesController(AppDbContext context)
+        public FavouritesController(IFavouriteRepository favouriteRepository)
         {
-            _context = context;
+            _favouriteRepository = favouriteRepository;
         }
 
         [AllowAnonymous]
         [HttpGet("getAllFavourites")]
         public async Task<ActionResult<List<Favourite>>> GetAllFavourites()
         {
-            var favs = await _context.Favourites.ToListAsync();
+            var favs = await _favouriteRepository.GetAllAsync();
 
             if (favs == null)
             {
@@ -41,11 +42,8 @@ namespace MusicShop.Controllers
         }
 
         [HttpGet("getFavourites/{id}")]
-        public async Task<ActionResult<List<Favourite>>> GetFavouritesByUser(string id) {
-            var favsByUser = await _context.Favourites
-                                    .Include(f => f.Product)
-                                    .Where(f => f.CustomerId == id)
-                                    .ToListAsync();
+        public async Task<ActionResult<IEnumerable<Favourite>>> GetFavouritesByUser(string id) {
+            var favsByUser = await _favouriteRepository.GetFavouritesByUserAsync(id);
 
             return Ok(favsByUser);
         }
@@ -55,9 +53,8 @@ namespace MusicShop.Controllers
         {
             try
             {
-                _context.Attach(fav.Product);
-                _context.Favourites.Add(fav);
-                await _context.SaveChangesAsync();
+                await _favouriteRepository.AddAsync(fav);
+                await _favouriteRepository.SaveChangesAsync();
 
                 return Ok(fav);
             }
@@ -76,7 +73,7 @@ namespace MusicShop.Controllers
         [HttpPost("findFavourite")]
         public async Task<ActionResult<object>> FindFavourite([FromBody] Favourite fav)
         {
-            var found = await _context.Favourites.AnyAsync(f => f.CustomerId.Equals(fav.CustomerId) && f.Product.Id.Equals(fav.Product.Id));
+            var found = await _favouriteRepository.FindFavouriteAsync(fav);
 
             if (!found)
             {
@@ -89,17 +86,15 @@ namespace MusicShop.Controllers
         [HttpDelete("deleteFavourite/{userId}/{productId}")]
         public async Task<IActionResult> DeleteFavouritesByUserId(string userId, string productId)
         {
-            var favouritesToDelete = await _context.Favourites
-                                                    .Where(f => f.CustomerId == userId && f.Product.Id == productId)
-                                                    .ToListAsync();
+            var favouritesToDelete = await _favouriteRepository.GetFavouritesByUserIdAsync(userId, productId);
 
-            if (favouritesToDelete.Count == 0)
+            if (favouritesToDelete == null)
             {
                 return NotFound();
             }
 
-            _context.Favourites.RemoveRange(favouritesToDelete);
-            await _context.SaveChangesAsync();
+            await _favouriteRepository.DeleteAllAsync(favouritesToDelete);
+            await _favouriteRepository.SaveChangesAsync();
 
             return Ok();
         }
@@ -108,8 +103,7 @@ namespace MusicShop.Controllers
         [HttpDelete("deleteAllFavourites")]
         public async Task<ActionResult<List<Favourite>>> DeleteAllFavourites()
         {
-            _context.Favourites.RemoveRange(_context.Favourites);
-            var deletedRows = await _context.SaveChangesAsync();
+            var deletedRows = await _favouriteRepository.DeleteAllAsync();
 
             return Ok(deletedRows);
         }

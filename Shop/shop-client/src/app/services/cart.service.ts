@@ -22,7 +22,7 @@ export class CartService extends HttpErrorHandler {
 		if(foundSameItem === undefined){
 			this.items.push(product)
 		} else {
-			foundSameItem.quantity += product.quantity
+			foundSameItem.quantity += Number(product.quantity);
 		}
 		this.itemsSize.emit(this.items.length)
 		Swal.fire(

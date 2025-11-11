@@ -22,7 +22,7 @@
                                         </div>
                                         <ul class="widget-49-meeting-points">
                                             <li class="widget-49-meeting-item"><span>No. of items: {{ order.orderProducts.length }}</span></li>
-                                            <li class="widget-49-meeting-item"><span>Total price: {{ order.totalPrice  }}</span></li>
+                                            <li class="widget-49-meeting-item"><span>Total price: {{ order.totalPrice | currency: 'EUR' }}</span></li>
                                         </ul>
                                         <div class="widget-49-meeting-action">
                                             <a (click)="showOrder(order)"  class="btn btn-sm btn-flash-border-primary">View All</a>

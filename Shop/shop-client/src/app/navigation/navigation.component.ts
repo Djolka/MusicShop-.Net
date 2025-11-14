@@ -3,7 +3,7 @@ import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 import { CartService } from '../services/cart.service';
 import { FavouritesService } from '../services/favourites.service';
-import Swal  from 'sweetalert2';
+import Swal from 'sweetalert2';
 import { Product } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 import { AuthService } from '../services/auth.service';
@@ -14,27 +14,25 @@ import { AuthService } from '../services/auth.service';
 	styleUrls: ['./navigation.component.css']
 })
 
-export class NavigationComponent implements OnInit{
+export class NavigationComponent implements OnInit {
 
 	public items: Product[]
 	public filteredItems: Product[]
 	public loggedIn: boolean = false
 	public itemsSize: number = 0
 	public favSize: number = 0
+	public isUserAdmin = false
 	public searchFilter: string = ""
 
-	constructor (private userService: UserService,
-				 private favouritesService: FavouritesService,
-				 private cartService: CartService,
-				 private productService: ProductService,
-				 private authService: AuthService,	 
-				 private router: Router) {
+	constructor(private userService: UserService,
+		private favouritesService: FavouritesService,
+		private cartService: CartService,
+		private productService: ProductService,
+		private authService: AuthService,
+		private router: Router) {
 		this.productService.getProducts().subscribe(items => {
 			this.items = items
 		})
-		if(this.authService.get_id() === undefined) {
-			this.loggedIn = true
-		}
 	}
 
 	public logout() {
@@ -49,9 +47,12 @@ export class NavigationComponent implements OnInit{
 	}
 
 	ngOnInit(): void {
+		console.log(this.isUserAdmin = this.authService.getRole() === 'Admin')
+		this.isUserAdmin = this.authService.getRole() === 'Admin';
+
 		this.authService.log.subscribe(login => {
 			this.loggedIn = login
-			if(this.loggedIn === false) {
+			if (this.loggedIn === false) {
 				this.favouritesService.clear()
 			} else {
 				this.favouritesService.getFavList(this.authService.get_id()).subscribe(items => {
@@ -59,18 +60,23 @@ export class NavigationComponent implements OnInit{
 				});
 			}
 		})
+
+		this.authService.isAdmin.subscribe(boolIsAdmin => {
+			this.isUserAdmin = boolIsAdmin
+		})
+
 		this.cartService.itemsSize.subscribe(size => {
 			this.itemsSize = size
 		})
-		
+
 		this.favouritesService.favSize.subscribe(size => {
 			this.favSize = size
-		}) 
+		})
 	}
 
 	public filterFunction() {
-		if(this.searchFilter.trim() !== ""){
-  			this.filteredItems = this.items.filter(item => item.name.toLowerCase().includes(this.searchFilter.toLowerCase()));
+		if (this.searchFilter.trim() !== "") {
+			this.filteredItems = this.items.filter(item => item.name.toLowerCase().includes(this.searchFilter.toLowerCase()));
 
 			return this.filteredItems
 		}

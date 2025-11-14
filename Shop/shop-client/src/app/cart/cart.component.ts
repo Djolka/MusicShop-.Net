@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CartService } from '../services/cart.service';
 import { Product } from '../models/product.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { User } from '../models/user.model';
 import { OrderService } from '../services/order.service';
@@ -25,8 +24,7 @@ export class CartComponent {
 	constructor (private cartService: CartService,
 				 private userService: UserService,
 				 private orderService: OrderService,
-				 private authService: AuthService,
-				 private formBuilder: FormBuilder) {
+				 private authService: AuthService) {
 		this.refreshUser()
 		
 		this.items = this.cartService.getitems()

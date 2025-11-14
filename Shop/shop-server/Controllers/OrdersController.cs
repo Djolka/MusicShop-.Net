@@ -31,7 +31,7 @@ namespace MusicShop.Controllers
             _transactionRepository = transactionRepository;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [HttpGet("getOrders")]
         public async Task<ActionResult<List<Order>>> GetOrders()
         {

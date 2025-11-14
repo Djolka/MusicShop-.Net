@@ -43,4 +43,10 @@ export class OrderService {
 		return this.http.get<Order[]>(this.ordersUrl + 'userOrders/'+ id, { headers })
 	}
 
+	public getAllOrders(): Observable<Order[]> {
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+		return this.http.get<Order[]>(this.ordersUrl + 'getOrders/', { headers })
+	}
 }

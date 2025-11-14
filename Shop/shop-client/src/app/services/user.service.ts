@@ -83,9 +83,17 @@ export class UserService extends HttpErrorHandler {
 			'Authorization': `Bearer ${this.authService.getToken()}`
 		});
 
-		return this.http.get<User>(this.usersURL + 'user/' + id, { headers})
+		return this.http.get<User>(this.usersURL + 'user/' + id, { headers })
 	}
 
+	public getAllUsers(): Observable<User[]> {
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+		
+		return this.http.get<User[]>(this.usersURL + 'users/', { headers })
+	}
+ 
 	public logOut() {
 		localStorage.clear()
 		this.log.emit(false)

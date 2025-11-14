@@ -12,8 +12,8 @@ using MusicShop.Data;
 namespace shop_server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250526153306_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251113114414_NewMigration")]
+    partial class NewMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,6 +157,10 @@ namespace shop_server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

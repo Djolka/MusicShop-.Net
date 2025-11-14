@@ -24,12 +24,13 @@ namespace MusicShop.Services
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
+            
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("id", user.Id.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim("id", user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role ?? "User")
             };
 
             var token = new JwtSecurityToken(

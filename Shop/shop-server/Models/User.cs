@@ -23,5 +23,7 @@ namespace MusicShop.Models
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public required string Email { get; set; }
+
+        public string Role {  get; set; } = string.Empty;
     }
 }

@@ -1,0 +1,25 @@
+<div class="user_container">
+    <div *ngFor="let user of usersList" class="user_items">
+        <ul class="user_list" [class.selected]="user === selectedUser">
+            <li class="user_item clearfix">
+                <div class="card-body pt-0">
+                    <div class="widget-49">
+                        <div class="widget-49-title-wrapper">
+                            <div class="widget-49-date-primary">
+                                <span class="widget-49-date-day">{{ user.role }}</span>
+                            </div>
+                            <div class="widget-49-meeting-info">
+                                <span class="widget-49-pro-title">ID: <b>{{ user.id }}</b></span>
+                                <span class="widget-49-pro-title">Full Name: {{ user.name }} {{ user.lastName }}</span>
+                                <span class="widget-49-pro-title">Email: {{ user.email }}</span>
+                            </div>
+                        </div>
+                        <div class="widget-49-meeting-action">
+                            <a (click)="showUser(user)" class="btn btn-sm btn-flash-border-primary">View All</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

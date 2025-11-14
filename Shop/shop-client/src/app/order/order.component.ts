@@ -35,6 +35,7 @@ export class OrderComponent implements OnInit {
 
 	public async showOrder(order: Order) {
 		this.displayItems = [];
+		this.selectedOrder = order;
 
 		for (const op of order.orderProducts) {
 			const product: Product = await firstValueFrom(this.productService.getProductById(op.productId));

@@ -38,7 +38,7 @@
         </div>
 
         <!-- Favorites icon -->
-        <div *ngIf="loggedIn" class="d-flex align-items-center">
+        <div *ngIf="loggedIn && !isUserAdmin" class="d-flex align-items-center">
             <input *ngIf="favSize===0;else notEmptyFav" [routerLink]="['/favourites']" type="image"
                 src="../../assets/favourite.png" height="30px" width="30px" alt="favorite" />
             <ng-template #notEmptyFav>
@@ -51,12 +51,25 @@
         </div>
 
         <!-- Cart icon -->
-        <div *ngIf="loggedIn" class="d-flex align-items-center">
+        <div *ngIf="loggedIn && !isUserAdmin" class="d-flex align-items-center">
             <input *ngIf="itemsSize===0; else notEmpty" [routerLink]="['/cart']" type="image"
                 src="../../assets/cart.svg" height="30px" width="30px" alt="cart" />
             <ng-template #notEmpty>
                 <input [routerLink]="['/cart']" type="image" src="../../assets/cart-full.png" height="30px" width="30px"
                     alt="cart" />
+                <span class="position-relative translate-middle badge bg-danger">
+                    {{ itemsSize }}
+                </span>
+            </ng-template>
+        </div>
+
+        <!-- Admin icon -->
+        <div *ngIf="loggedIn && isUserAdmin" class="d-flex align-items-center">
+            <input *ngIf="itemsSize===0; else notEmpty" [routerLink]="['/admin']" type="image"
+                src="../../assets/adminLogo.jpg" height="30px" width="30px" alt="admin" />
+            <ng-template #notEmpty>
+                <input [routerLink]="['/admin']" type="image" src="../../assets/adminLogo.jpg" height="30px" width="30px"
+                    alt="admin" />
                 <span class="position-relative translate-middle badge bg-danger">
                     {{ itemsSize }}
                 </span>

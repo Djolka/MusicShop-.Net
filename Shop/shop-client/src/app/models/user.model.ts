@@ -8,4 +8,5 @@ export class User {
     country: string;
     phoneNumber: string;
     picture: string;
+    role: string;
 }

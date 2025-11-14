@@ -9,17 +9,31 @@ import { ProductInfoComponent } from './product-info/product-info.component';
 import { CartComponent } from './cart/cart.component';
 import { FavouritesComponent } from './favourites/favourites.component';
 import { OrderComponent } from './order/order.component';
+import { AdminComponent } from './admin/admin.component';
+import { AdminUsersComponent } from './admin-users/admin-users.component';
+import { AdminOrdersComponent } from './admin-orders/admin-orders.component';
+import { AdminGuard } from './guards/admin.guard';
 
 
 const routes: Routes = [
-	{path: '', component: HomeComponent},
-	{path: 'orders', component: OrderComponent},
-	{path: 'favourites', component: FavouritesComponent},
-	{path: 'product/:id', component: ProductInfoComponent},
-	{path: 'login', component: UserLoginComponent},
-	{path: 'signup', component: UserSignupComponent},
-	{path: 'profile', component: UserProfileComponent},
-	{path: 'cart', component: CartComponent}
+	{ path: '', component: HomeComponent },
+	{ path: 'orders', component: OrderComponent },
+	{ path: 'favourites', component: FavouritesComponent },
+	{ path: 'product/:id', component: ProductInfoComponent },
+	{ path: 'login', component: UserLoginComponent },
+	{ path: 'signup', component: UserSignupComponent },
+	{ path: 'profile', component: UserProfileComponent },
+	{ path: 'cart', component: CartComponent },
+	{
+		path: 'admin',
+		component: AdminComponent,
+		canActivate: [AdminGuard],
+		children: [
+			{ path: '', redirectTo: 'users', pathMatch: 'full' }, // default child
+			{ path: 'users', component: AdminUsersComponent },
+			{ path: 'orders', component: AdminOrdersComponent }
+		]
+	}
 ];
 
 @NgModule({

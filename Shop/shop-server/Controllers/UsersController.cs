@@ -25,7 +25,7 @@ namespace MusicShop.Controllers
         }
 
         // GET /users/users
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [HttpGet("users")]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
@@ -69,6 +69,7 @@ namespace MusicShop.Controllers
                 return Unauthorized(new { message = "Invalid password" });
 
             var token = _jwtTokenService.GenerateToken(userFound);
+
             return Ok(new { token, user = userFound });
         }
 
@@ -89,7 +90,8 @@ namespace MusicShop.Controllers
                 Password = _passwordHasher.HashPassword(signupUserDTO, signupUserDTO.Password),
                 Address = string.Empty,
                 Country = string.Empty,
-                PhoneNumber = string.Empty
+                PhoneNumber = string.Empty,
+                Role = "User" //default to User
             };
 
             await _userRepository.AddAsync(user);
@@ -149,6 +151,21 @@ namespace MusicShop.Controllers
             await _userRepository.SaveChangesAsync();
 
             return Ok(new { message = "User deleted successfully" });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("setRole/{id}")]
+        public async Task<IActionResult> SetRole(string id, [FromBody] string newRole)
+        {
+            if (newRole != "User" && newRole != "Admin") return BadRequest("Role not supported");
+
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null) return NotFound();
+
+            user.Role = newRole;
+            await _userRepository.SaveChangesAsync();
+
+            return Ok($"User {user.Email} promoted to {newRole}");
         }
     }
 }

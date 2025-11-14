@@ -1,0 +1,25 @@
+.header-container {
+    background-color: #e8f1f7;
+    /* same color as your screenshot */
+    padding: 20px 20px 0 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.tabs {
+    display: flex;
+    gap: 30px;
+    /* space between tabs */
+    font-size: 16px;
+}
+
+.tab {
+    padding-bottom: 10px;
+    cursor: pointer;
+    color: #555;
+}
+
+.tab.active {
+    border-bottom: 3px solid #0073aa;
+    font-weight: 600;
+    color: #000;
+}

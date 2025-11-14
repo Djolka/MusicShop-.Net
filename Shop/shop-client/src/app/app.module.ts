@@ -15,6 +15,9 @@ import { ProductInfoComponent } from './product-info/product-info.component';
 import { CartComponent } from './cart/cart.component';
 import { FavouritesComponent } from './favourites/favourites.component';
 import { OrderComponent } from './order/order.component';
+import { AdminComponent } from './admin/admin.component';
+import { AdminUsersComponent } from './admin-users/admin-users.component';
+import { AdminOrdersComponent } from './admin-orders/admin-orders.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,10 @@ import { OrderComponent } from './order/order.component';
     ProductInfoComponent,
     CartComponent,
     FavouritesComponent,
-    OrderComponent
+    OrderComponent,
+    AdminComponent,
+    AdminUsersComponent,
+    AdminOrdersComponent
   ],
   imports: [
     BrowserModule,

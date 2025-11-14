@@ -1,0 +1,15 @@
+<div class="header-container">
+    <div class="tabs">
+
+        <div class="tab" routerLink="/admin/users" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            Users
+        </div>
+
+        <div class="tab" routerLink="/admin/orders" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            Orders
+        </div>
+
+    </div>
+</div>
+
+<router-outlet></router-outlet>

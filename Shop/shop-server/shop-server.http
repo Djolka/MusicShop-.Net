@@ -1,6 +1,6 @@
 @shop_server_HostAddress = http://localhost:5196
 
-GET {{shop_server_HostAddress}}/weatherforecast/
+GET {{shop_server_HostAddress}}/musicShop/
 Accept: application/json
 
 ###

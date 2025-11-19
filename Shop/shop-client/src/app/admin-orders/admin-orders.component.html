@@ -1,27 +1,69 @@
-<div class="order_container">
-    <div *ngFor="let order of ordersList" class="order_items">
-        <ul class="order_list" [class.selected]="order === selectedOrder">
-            <li class="order_item clearfix">
-                <div class="card-body pt-0">
+<div class="order-items-wrapper">
+
+    <!-- LEFT SIDE: Orders -->
+    <div class="order_container">
+        <div *ngFor="let order of ordersList" class="order_items">
+            <ul class="order_list" [class.selected]="order === selectedOrder">
+                <li class="order_item clearfix">
                     <div class="widget-49">
                         <div class="widget-49-title-wrapper">
-                            <div class="widget-49-date-primary">
-                                <!-- <span class="widget-49-date-day">{{ order.id }}</span> -->
-                            </div>
                             <div class="widget-49-meeting-info">
                                 <span class="widget-49-pro-title">Order ID: <b>{{ order.id }}</b></span>
                                 <span class="widget-49-pro-title">Customer ID: <b>{{ order.customerId }}</b></span>
-                                <span class="widget-49-pro-title">Full Name: {{ order.date | date:'dd-MM-yyyy, HH:mm': 'GMT+2' }}</span>
-                                <span class="widget-49-pro-title">Total price: {{ order.totalPrice | currency: 'EUR' }}</span>
-                                <span class="widget-49-pro-title">No. of products: {{ order.orderProducts.length }}</span>
+                                <span class="widget-49-pro-title">Date: {{ order.date | date:'dd-MM-yyyy, HH:mm':'GMT+2'
+                                    }}</span>
+                                <span class="widget-49-pro-title">Total price: {{ order.totalPrice | currency:'EUR'
+                                    }}</span>
+                                <span class="widget-49-pro-title">No. of products: {{ order.orderProducts.length
+                                    }}</span>
                             </div>
                         </div>
                         <div class="widget-49-meeting-action">
+                            <span class="order-status" [ngClass]="order.isVerified ? 'completed' : 'pending'">
+                                <i class="status-icon"
+                                    [ngClass]="order.isVerified ? 'icon-completed' : 'icon-pending'"></i>
+                                {{ order.isVerified ? 'Completed' : 'Pending' }}
+                            </span>
                             <a (click)="showOrder(order)" class="btn btn-sm btn-flash-border-primary">View All</a>
                         </div>
                     </div>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- RIGHT SIDE: Products of selected order -->
+    <div class="order_products" *ngIf="displayItems.length !== 0">
+        <div *ngFor="let item of displayItems">
+            <ul class="cart_list">
+                <li class="cart_item">
+                    <div class="cart_item_image">
+                        <img [src]="item.picture[0]" />
+                    </div>
+
+                    <div class="cart_item_info">
+                        <div>
+                            <div class="cart_item_title">Name</div>
+                            <div>{{ item.name }}</div>
+                        </div>
+
+                        <div>
+                            <div class="cart_item_title">Quantity</div>
+                            <div>{{ item.quantity }}</div>
+                        </div>
+
+                        <div class="cart_item_price">
+                            {{ item.price * item.quantity | currency:'EUR' }}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div *ngIf="selectedOrder.isVerified === false" class="order_action_wrapper">
+            <button class="approve_btn" (click)="approveOrder(selectedOrder.id)">
+                Approve Order
+            </button>
+        </div>
     </div>
 </div>

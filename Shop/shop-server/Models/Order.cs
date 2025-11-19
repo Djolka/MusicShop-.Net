@@ -19,6 +19,8 @@ namespace MusicShop.Models
         [Required]
         public required double TotalPrice { get; set; }
 
+        public Boolean isVerified { get; set; } = false;
+
         public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     }
 

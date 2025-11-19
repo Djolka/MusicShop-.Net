@@ -5,8 +5,8 @@
     <div class="container-fluid">
         <div class="row" id="row">
             <div class="col-lg-4 offset-lg-1">
-                <div class="cart_container"> 
-                    <div *ngFor="let order of ordersList" class="cart_items" > 
+                <div class="cart_container">
+                    <div *ngFor="let order of ordersList" class="cart_items">
                         <ul class="cart_list" [class.selected]="order === selectedOrder">
                             <li class="cart_item clearfix">
                                 <div class="card-body pt-0">
@@ -17,15 +17,25 @@
                                             </div>
                                             <div class="widget-49-meeting-info">
                                                 <span class="widget-49-pro-title">Order id: <b>{{ order.id }}</b></span>
-                                                <span class="widget-49-meeting-time">{{ order.date | date:'dd-MM-yyyy, HH:mm': 'GMT+2' }}</span>
+                                                <span class="widget-49-meeting-time">{{ order.date | date:'dd-MM-yyyy,
+                                                    HH:mm': 'GMT+2' }}</span>
                                             </div>
                                         </div>
                                         <ul class="widget-49-meeting-points">
-                                            <li class="widget-49-meeting-item"><span>No. of items: {{ order.orderProducts.length }}</span></li>
-                                            <li class="widget-49-meeting-item"><span>Total price: {{ order.totalPrice | currency: 'EUR' }}</span></li>
+                                            <li class="widget-49-meeting-item"><span>No. of items: {{
+                                                    order.orderProducts.length }}</span></li>
+                                            <li class="widget-49-meeting-item"><span>Total price: {{ order.totalPrice |
+                                                    currency: 'EUR' }}</span></li>
                                         </ul>
                                         <div class="widget-49-meeting-action">
-                                            <a (click)="showOrder(order)"  class="btn btn-sm btn-flash-border-primary">View All</a>
+                                            <span class="order-status"
+                                                [ngClass]="order.isVerified ? 'completed' : 'pending'">
+                                                <i class="status-icon"
+                                                    [ngClass]="order.isVerified ? 'icon-completed' : 'icon-pending'"></i>
+                                                {{ order.isVerified ? 'Completed' : 'Pending' }}
+                                            </span>
+                                            <a (click)="showOrder(order)"
+                                                class="btn btn-sm btn-flash-border-primary">View All</a>
                                         </div>
                                     </div>
                                 </div>
@@ -34,7 +44,7 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="displayItems.length !== 0"  class="col-lg-3"> 
+            <div *ngIf="displayItems.length !== 0" class="col-lg-3">
                 <div *ngFor="let item of displayItems">
                     <ul class="cart_list" style="margin-left:200px;width: 800px;">
                         <li class="cart_item clearfix">

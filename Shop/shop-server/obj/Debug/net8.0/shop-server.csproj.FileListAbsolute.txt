@@ -158,11 +158,6 @@ C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\
 C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\shop-server.sourcelink.json
 C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets.development.json
-C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets\msbuild.shop-server.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets\msbuild.build.shop-server.props
-C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.shop-server.props
-C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.shop-server.props
-C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\scopedcss\bundle\shop-server.styles.css
 C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\shop-ser.FCFBAF4A.Up2Date
 C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\shop-server.dll
@@ -170,3 +165,11 @@ C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\
 C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\shop-server.pdb
 C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\shop-server.genruntimeconfig.cache
 C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\ref\shop-server.dll
+C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\bin\Debug\net8.0\shop-server.staticwebassets.endpoints.json
+C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\DjordjeMilos_b36mnyi\Desktop\MusicShop-.Net\Shop\shop-server\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

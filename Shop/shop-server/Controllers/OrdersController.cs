@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MusicShop.Models;
 using MusicShop.Repositories;
+using MusicShop.Services;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.CodeDom;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace MusicShop.Controllers
 {
@@ -21,14 +23,18 @@ namespace MusicShop.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IOrderProductsRepository _orderProductsRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IEmailSenderService _emailSenderService;
 
-        public OrderController(IOrderRepository orderRepository, IOrderProductsRepository orderProductsRepository, ITransactionRepository transactionRepository)
+        public OrderController(IOrderRepository orderRepository, IOrderProductsRepository orderProductsRepository, ITransactionRepository transactionRepository, IEmailSenderService emailSenderService, IUserRepository userRepository)
         {
             _orderRepository = orderRepository;
             _orderProductsRepository = orderProductsRepository;
             _transactionRepository = transactionRepository;
+            _emailSenderService = emailSenderService;
+            _userRepository = userRepository;
         }
 
         [Authorize(Roles = "Admin")]
@@ -79,7 +85,6 @@ namespace MusicShop.Controllers
 
                 await _orderProductsRepository.SaveChangesAsync();
 
-                await _transactionRepository.CommitAsync();
 
                 // Load the order with products to return
                 var createdOrder = await _orderRepository.LoadNewOrderAsync(newOrder);
@@ -87,6 +92,17 @@ namespace MusicShop.Controllers
                 if (createdOrder == null)
                     return NotFound("Order not found after creation.");
 
+                // Take customer email
+                var user = await _userRepository.GetByIdAsync(orderDto.CustomerId);
+                if(user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+                string userEmail = user.Email;
+                await _emailSenderService.SendEmailAsync(userEmail, "Order created", "Your order " + newOrder.Id + " is succesfully created!\n Please wait for verification of the order.");
+                
+                
+                await _transactionRepository.CommitAsync();
                 return Ok(createdOrder);
             }
             catch (Exception e)
@@ -116,12 +132,50 @@ namespace MusicShop.Controllers
             return Ok(orders);
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("deleteOrders")]
-        public async Task<IActionResult> DeleteAllOrders() {
+        public async Task<IActionResult> DeleteAllOrders()
+        {
             await _orderRepository.DeleteAllAsync();
 
             return Ok();
-        }        
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("verifyOrder/{orderId}")]
+        public async Task<IActionResult> VerifyOrder(string orderId)
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            // Take customer email
+            var user = await _userRepository.GetByIdAsync(order.CustomerId);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            order.isVerified = true;
+
+            await _orderProductsRepository.SaveChangesAsync();
+
+            // Send Email
+            try
+            {
+                await _emailSenderService.SendEmailAsync(
+                    user.Email,
+                    "Order verified",
+                    $"Your order {orderId} is verified!\nYour order will arrive in 3-5 days."
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Email sending failed: " + ex.Message);
+            }
+            return Ok();
+        }
     }
 }

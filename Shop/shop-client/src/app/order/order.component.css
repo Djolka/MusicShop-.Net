@@ -205,3 +205,76 @@ ul {
 	background-color: #d6e9ff;
     border-color: #4e73e5;
 }
+
+.order-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+	margin-right: 30px;
+}
+
+.order-status.completed {
+    background-color: #e6f4ea;
+    color: #1e7e34;
+}
+
+.order-status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* Icons */
+.status-icon {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.icon-completed {
+    background-color: #28a745; /* green */
+}
+
+.icon-pending {
+    background-color: #ffc107; /* yellow */
+}
+
+.order-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.order-status.completed {
+    background-color: #e6f4ea;
+    color: #1e7e34;
+}
+
+.order-status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* Icons */
+.status-icon {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.icon-completed {
+    background-color: #28a745; /* green */
+}
+
+.icon-pending {
+    background-color: #ffc107; /* yellow */
+}

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FavouritesService } from '../services/favourites.service';
 import { UserService } from '../services/user.service';
-import { Favourites } from '../models/favourites.model';
+import { Favourite } from '../models/favourites.model';
 import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth.service';
 
@@ -12,7 +12,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class FavouritesComponent implements OnInit {
 
-	public favList: Favourites[] = []
+	public favList: Favourite[] = []
 	public loggedIn: boolean
 
 	constructor(private favouritesService: FavouritesService,

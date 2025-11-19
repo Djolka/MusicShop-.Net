@@ -154,8 +154,8 @@ namespace MusicShop.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("setRole/{id}")]
-        public async Task<IActionResult> SetRole(string id, [FromBody] string newRole)
+        [HttpPost("setRole/{id}/{newRole}")]
+        public async Task<IActionResult> SetRole(string id, string newRole)
         {
             if (newRole != "User" && newRole != "Admin") return BadRequest("Role not supported");
 
@@ -165,7 +165,7 @@ namespace MusicShop.Controllers
             user.Role = newRole;
             await _userRepository.SaveChangesAsync();
 
-            return Ok($"User {user.Email} promoted to {newRole}");
+            return Ok(new { message = $"User {user.Email} promoted to {newRole}" });
         }
     }
 }

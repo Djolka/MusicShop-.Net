@@ -6,4 +6,5 @@ export class Order {
     orderProducts: OrderProduct[];
     date: Date;
     totalPrice: number;
+    isVerified: boolean;
 }

@@ -27,5 +27,13 @@ namespace MusicShop.Repositories
                             .ThenInclude(op => op.Product)
                             .ToListAsync();
         }
+
+        public override async Task<IEnumerable<Order>> GetAllAsync()
+        {
+            return await _dbSet
+                            .Include(o => o.OrderProducts)
+                            .ThenInclude(op => op.Product)
+                            .ToListAsync();
+        }
     }
 }

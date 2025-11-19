@@ -49,4 +49,12 @@ export class OrderService {
 		});
 		return this.http.get<Order[]>(this.ordersUrl + 'getOrders/', { headers })
 	}
+
+	public validateOrder(orderId: string): Observable<any> {
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+
+		return this.http.post<Order[]>(this.ordersUrl + 'verifyOrder/' + orderId, {}, { headers })
+	}
 }

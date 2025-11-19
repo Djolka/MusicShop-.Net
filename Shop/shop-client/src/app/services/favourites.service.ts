@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Product } from '../models/product.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Favourites } from '../models/favourites.model';
+import { Favourite } from '../models/favourites.model';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from './auth.service';
@@ -19,7 +19,7 @@ export class FavouritesService {
 
 	constructor(private http: HttpClient, private authService: AuthService) { }
 
-	public addToFavList(product: Product, userId: string): Observable<Favourites> {
+	public addToFavList(product: Product, userId: string): Observable<Favourite> {
 		let body: FavouriteDTO = {
 			customerId: userId,
 			product: product
@@ -36,12 +36,12 @@ export class FavouritesService {
 		return newFavItem
 	}
 
-	public getFavList(userId: string): Observable<Favourites[]> {
+	public getFavList(userId: string): Observable<Favourite[]> {
 		const headers = new HttpHeaders({
 			'Authorization': `Bearer ${this.authService.getToken()}`
 		});
 
-		let res = this.http.get<Favourites[]>(this.favouritesUrl + 'getFavourites/' + userId, { headers })
+		let res = this.http.get<Favourite[]>(this.favouritesUrl + 'getFavourites/' + userId, { headers })
 		res.subscribe({
 			next: (items) => {
 				this.favListLength = items.length

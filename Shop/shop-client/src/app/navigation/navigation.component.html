@@ -15,7 +15,7 @@
                     <a class="nav-link" [routerLink]="['/']">Home</a>
                 </li>
                 <li class="nav-item">
-                    <button *ngIf="loggedIn" type="button" class="nav-link hover-button" [routerLink]="['/orders']" title="Log in to store your orders">My orders</button>
+                    <button *ngIf="loggedIn && !isUserAdmin" type="button" class="nav-link hover-button" [routerLink]="['/orders']" title="Log in to store your orders">My orders</button>
                 </li>
             </ul>
             <!-- Left links -->

@@ -98,4 +98,12 @@ export class UserService extends HttpErrorHandler {
 		localStorage.clear()
 		this.log.emit(false)
 	}
+
+	public changeRole(userId: string, role: string): Observable<any> {
+		const headers = new HttpHeaders({
+			'Authorization': `Bearer ${this.authService.getToken()}`
+		});
+		// console.log(this.usersURL + 'setRole/' + userId + "/" + role)
+		return this.http.post(this.usersURL + 'setRole/' + userId + "/" + role, {}, { headers })
+	}
 }

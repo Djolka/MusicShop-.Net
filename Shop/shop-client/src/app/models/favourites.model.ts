@@ -1,6 +1,6 @@
 import { Product } from "./product.model";
 
-export class Favourites {
+export class Favourite {
     id: string;
     customerId: string;
     product: Product;

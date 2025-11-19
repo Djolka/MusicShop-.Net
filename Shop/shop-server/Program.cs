@@ -5,6 +5,7 @@ using MusicShop.Data;
 using MusicShop.Services;
 using MusicShop.Repositories;
 using System.Text;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,8 @@ builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderProductsRepository, OrderProductsRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+builder.Services.AddTransient<IEmailSenderService, EmailSenderService>();
 
 
 builder.Services.AddEndpointsApiExplorer();
